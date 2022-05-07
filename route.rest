@@ -1,0 +1,24 @@
+GET http://localhost:3001/
+### 
+
+// Registerw
+POST http://localhost:3001/catalogues/add
+content-type: application/json
+
+{ 
+  "catalogue": "Catalogs 12345" 
+}
+###
+
+// List of all catalogue
+GET http://localhost:3001/catalogues
+###
+
+// Select one
+GET http://localhost:3001/catalogues/627684ef1612b7274d949272
+###
+
+// Delete one 
+DELETE http://localhost:3001/catalogues/6276a5d6a1478afaf7b7c1d7
+###
+
