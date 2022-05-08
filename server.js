@@ -33,7 +33,7 @@ app.use(express.json());
 /**
  * Connection to DB
  */
-const uri = process.env.ATLAS_URI;
+const uri = "mongodb+srv://autocorrectGuy:autocorrectGuy@cluster0.r7mty.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 mongoose.connect(uri);
 const connection = mongoose.connection;
 connection.once("open", () => {console.log("connected to mongodb succesfully")})
