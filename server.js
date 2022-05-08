@@ -10,7 +10,7 @@ const catalogueRouter = require("./routes/catalogue.routes");
 
 const PORT = process.env.PORT || 5000;
 
-const whitelist = ['http://localhost:3001', 'http://localhost:5000', `http://localhost:${PORT}`,  'https://qrkodi.herokuapp.com']
+const whitelist = ['http://localhost:3001', `http://localhost:${PORT}`,  'https://qrkodi.herokuapp.com']
 const corsOptions = {
   origin: function (origin, callback) {
     console.log("** Origin of request " + origin)

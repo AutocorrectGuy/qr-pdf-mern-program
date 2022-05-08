@@ -22,11 +22,14 @@ router.get("/:id", (req, res) => {
  * POST
  */
 router.post("/add", (req, res) => {
-  const catalogue = req.body.catalogue;
-  const newCatalogue = new Catalogue({catalogue});
+  const catalogue = {
+    name: req.body.name,
+    link: req.body.link
+  };
+  const newCatalogue = new Catalogue(catalogue);
 
   newCatalogue.save()
-    .then(() => res.json(`Catalogue "${catalogue}" added succesfully!`))
+    .then(() => res.json(`Catalogue "${catalogue.name}" added succesfully!`))
     .catch(err => res.status(400).json(`Error +_+: ${err}`))
 })
 

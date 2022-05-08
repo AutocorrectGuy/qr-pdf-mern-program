@@ -25,7 +25,7 @@ export default function CatalogueList() {
     if(data.length > 0) {
       let newQRCodes = []
       data.map(async item => {
-        newQRCodes.push(await QRCode.toDataURL(`/catalogues/${item._id}`));
+        newQRCodes.push(await QRCode.toDataURL(`/catalogues/${item.link}`));
       })
       setQRCoes(newQRCodes);
     }
@@ -46,7 +46,7 @@ export default function CatalogueList() {
       <div>
         <div className="flex flex-wrap justify-center gap-3">
           {(dataWithQR !== undefined) && dataWithQR.map((item, index) => 
-            <CatalogueCard imgSrc={item.qrCode} key={`qr-card-${index}`} id={item._id}  name={item.catalogue}/>
+            <CatalogueCard imgSrc={item.qrCode} key={`qr-card-${index}`} id={item._id}  name={item.name} link={item.link}/>
           )}
         </div>
       <div className="text-white">{(dataWithQR === undefined) && "List data is loading..."}</div>
@@ -54,13 +54,13 @@ export default function CatalogueList() {
       
     )
   }
-  function CatalogueCard({imgSrc, id, name}) {
+  function CatalogueCard({imgSrc, id, name, link}) {
     return(
       <div className="flex flex-row border border-neutral-400 p-4 gap-3 rounded-md bg-neutral-300 group-hover:text-white hover:bg-rose-600 max-w-[400px] w-full shadow-sm shadow-neutral-600">
         <img className="w-32 h-32" src={imgSrc} />
         <div className="flex flex-col">
-          <div className="flex border-b border-b-neutral-600 font-bold mb-2 pb-1 text-lg cursor-default">{name}</div>
-          <Link className="break-all text-neutral-600 hover:text-white" to={`/catalogues/${id}`}>{`Adrese: ${id}`}</Link>
+          <div className="flex border-b border-b-neutral-600 font-bold mb-2 pb-1 cursor-default leading-5">{name}</div>
+          <a className="break-all text-neutral-600 hover:text-white text-sm cursor-pointer" href={link}>{`Adrese: ${link}`}</a>
         </div>  
       </div>
     )
