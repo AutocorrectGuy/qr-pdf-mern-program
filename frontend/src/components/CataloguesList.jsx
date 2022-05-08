@@ -13,7 +13,7 @@ export default function CatalogueList() {
 
   // get data from db
   useEffect(() => {
-    axios.get("http://localhost:3001/catalogues")
+    axios.get("/catalogues")
       // save data from database
       .then(res => {
         if(res.data.length > 0) setData(res.data)
@@ -25,7 +25,7 @@ export default function CatalogueList() {
     if(data.length > 0) {
       let newQRCodes = []
       data.map(async item => {
-        newQRCodes.push(await QRCode.toDataURL(`http://localhost:3001/catalogues/${item._id}`));
+        newQRCodes.push(await QRCode.toDataURL(`/catalogues/${item._id}`));
       })
       setQRCoes(newQRCodes);
     }
@@ -44,7 +44,7 @@ export default function CatalogueList() {
   function CatalogueList() {
     return(
       <div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="flex flex-wrap justify-center gap-3">
           {(dataWithQR !== undefined) && dataWithQR.map((item, index) => 
             <CatalogueCard imgSrc={item.qrCode} key={`qr-card-${index}`} id={item._id}  name={item.catalogue}/>
           )}
@@ -56,23 +56,21 @@ export default function CatalogueList() {
   }
   function CatalogueCard({imgSrc, id, name}) {
     return(
-      <div className="flex flex-row border border-black p-2 rounded-md bg-neutral-400">
-        <div className="w-14 h-14">
-          <img className="flex w-full h-full" src={imgSrc} />
-        </div>
+      <div className="flex flex-row border border-neutral-400 p-4 gap-3 rounded-md bg-neutral-300 group-hover:text-white hover:bg-rose-600 max-w-[400px] w-full shadow-sm shadow-neutral-600">
+        <img className="w-32 h-32" src={imgSrc} />
         <div className="flex flex-col">
-          <div className="flex border border-black">{name}</div>
-          <Link to={`/catalogues/${id}`}>{id}</Link>
+          <div className="flex border-b border-b-neutral-600 font-bold mb-2 pb-1 text-lg cursor-default">{name}</div>
+          <Link className="break-all text-neutral-600 hover:text-white" to={`/catalogues/${id}`}>{`Adrese: ${id}`}</Link>
         </div>  
       </div>
     )
   }
 
   return(
-    <div className="min-h-screen bg-neutral-800">
-      <div className="pt-12 flex justify-center">
+    <div className="flex min-h-screen bg-[#525659] justify-center">
+      <div className="pt-14 flex justify-center bg-white max-w-7xl w-full shadow-xl shadow-neutral-800">
         <div className="flex flex-col">
-          <div className="text-white text-center my-5 font-mono">This is the  Catalogue list!</div>
+          <div className="text-black text-2xl font-semibold text-center my-12 cursor-default">Katalogu saraksts</div>
           <CatalogueList />
         </div>
       </div>
