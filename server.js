@@ -31,7 +31,7 @@ app.use(cors());
 app.use(express.json());
 
 /**
- * Connection to DB
+ * Connection to mongodb 
  */
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri);
