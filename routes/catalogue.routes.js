@@ -66,7 +66,7 @@ router.post("/upload", uploadStorage.single("file"), (req, res) => {
     .catch(err => res.status(400).json(`Error +_+: ${err}`))
 
   console.log(req.file)
-  return res.send("Single file")
+  return res.json("Upload succesfull")
 })
 
 /**
