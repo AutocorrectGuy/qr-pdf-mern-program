@@ -61,7 +61,7 @@ export default function Navbar() {
             <div className="text-[1.05rem] font-semibold font-metrophobic text-neutral-500 truncate text-clip">V0.0001 10:00 05.09.2022</div>
             {darbibas1.map((item, i) => <div key={`darbiba-${i}`} className={liItemTextStyles}>{item}</div>)}
             <div className="text-[1.05rem] font-semibold font-metrophobic text-neutral-500 truncate text-clip pt-4">V0.0002 15:00 05.09.2022</div>
-            {darbibas1.map((item, i) => <div key={`darbiba-${i}`} className={liItemTextStyles}>{item}</div>)}
+            {darbibas2.map((item, i) => <div key={`darbiba-${i}`} className={liItemTextStyles}>{item}</div>)}
           </div>}
         </div>
       </div>
