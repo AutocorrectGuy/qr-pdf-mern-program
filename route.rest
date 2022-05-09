@@ -20,6 +20,6 @@ GET http://localhost:3001/catalogues/627684ef1612b7274d949272
 ###
 
 // Delete one 
-DELETE http://localhost:3001/catalogues/6277c98a482af9cdcf70dad2
+DELETE http://localhost:3001/catalogues/6277ce5738633ac10f49e2f2
 ###
 

@@ -44,10 +44,14 @@ export default function CatalogueList() {
   function CatalogueList() {
     return(
       <div>
-        <div className="flex flex-wrap justify-center gap-3">
-          {(dataWithQR !== undefined) && dataWithQR.map((item, index) => 
-            <CatalogueCard imgSrc={item.qrCode} key={`qr-card-${index}`} id={item._id}  name={item.name} link={item.link}/>
-          )}
+        <div className="p-10">
+            <div className="text-white text-3xl font-bold my-8 cursor-default">Katalogu saraksts</div>
+            <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
+              {(dataWithQR !== undefined) && dataWithQR.map((item, index) => 
+                <CatalogueCard imgSrc={item.qrCode} key={`qr-card-${index}`} id={item._id}  name={item.name} link={item.link}/>
+              )}
+            </div>
+
         </div>
       <div className="text-white">{(dataWithQR === undefined) && "List data is loading..."}</div>
       </div>
@@ -56,23 +60,26 @@ export default function CatalogueList() {
   }
   function CatalogueCard({imgSrc, id, name, link}) {
     return(
-      <div className="flex flex-row border border-neutral-400 p-4 gap-3 rounded-md bg-neutral-300 group-hover:text-white hover:bg-rose-600 max-w-[400px] w-full shadow-sm shadow-neutral-600">
-        <img className="w-32 h-32" src={imgSrc} />
+      <div className="flex flex-col p-4 rounded-lg bg-neutral-800 hover:bg-neutral-700 max-w-[224px] w-full">
+        <img className="w-full rounded-lg pb-4" src={imgSrc} />
         <div className="flex flex-col">
-          <div className="flex border-b border-b-neutral-600 font-bold mb-2 pb-1 cursor-default leading-5">{name}</div>
-          <a className="break-all text-neutral-600 hover:text-white text-sm cursor-pointer" href={link}>{`Adrese: ${link}`}</a>
+          <div className="text-neutral-100 flex font-bold pb-1 cursor-default leading-5">
+            {name.length > 25 ? `${name.slice(0,25)}...` : name}
+          </div>
+          <a className="text-neutral-500  break-all hover:text-white text-sm cursor-pointer leading-4" href={link}>
+            {`${link.length > 30 ? `${link.slice(0,30)}...` : link}`}
+          </a>
         </div>  
       </div>
     )
   }
 
   return(
-    <div className="flex min-h-screen bg-[#525659] justify-center">
-      <div className="pt-14 flex justify-center bg-white max-w-7xl w-full shadow-xl shadow-neutral-800">
-        <div className="flex flex-col">
-          <div className="text-black text-2xl font-semibold text-center my-12 cursor-default">Katalogu saraksts</div>
-          <CatalogueList />
-        </div>
+    <div className="relative flex justify-center w-full min-h-screen">
+      <div className="absolute -z-10 flex justify-center w-screen bg-gradient-to-b from-neutral-700 to-neutral-800 brightness-50 h-[400px]"></div>
+      <div className="absolute -z-20 flex justify-center w-screen bg-neutral-800 brightness-50 max-h-max h-full"></div>
+      <div className="flex flex-col">
+        <CatalogueList />
       </div>
     </div>
   )

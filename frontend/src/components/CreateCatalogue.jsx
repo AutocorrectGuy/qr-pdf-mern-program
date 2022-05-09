@@ -29,42 +29,46 @@ export default function CreateCatalogue() {
       name: inputName.current, 
       link: inputLink.current
     })
-      .then(res => console.log(res.data))
+      .then(res => {
+        console.log(res.data)
+        window.location = '/';
+      }
+      )
       .catch(err => console.log(`Error ${err}`));
   }
 
   return(
-    <div className="pt-14 flex items-center justify-center min-h-screen bg-teal-900">
-      <div className="flex pt-24 justify-center bg-white max-w-7xl w-full shadow-xl shadow-neutral-800 min-h-screen">
+      <div className="relative flex justify-center w-full min-h-screen">
+        <div className="absolute -z-10 flex justify-center w-screen bg-gradient-to-b from-teal-900 brightness-50 to-neutral-800 h-[300px]"></div>
+        <div className="absolute -z-20 flex justify-center w-screen bg-neutral-800 brightness-50 max-h-max h-full"></div>
         <form onSubmit={(e) => onSubmit(e)}
-        className="flex flex-col gap-1 max-w-sm w-full bg-cyan-900 rounded-md p-3 shadow-sm shadow-neutral-800 max-h-48">
-          <label className="text-neutral-200">
+        className="flex flex-col text-xl gap-1 max-w-lg w-full mt-52 bg-neutral-800 bg-opacity-40 rounded-md p-10 shadow-sm shadow-neutral-800 h-fit">
+          <label className="text-neutral-200 pb-1">
             Kataloga nosaukums
           </label>
           <input 
             type="text" name="name" 
-            className="px-3 bg-neutral-800 rounded-md focus:outline-none text-white py-1 placeholder:text-neutral-500"
+            className="px-3 bg-neutral-800 focus:bg-neutral-700 rounded-md focus:outline-none text-white py-1 placeholder:text-neutral-400"
             placeholder="kataloga-nosaukums"
             onChange={(e)=>onChangeCallback(e, inputName)}
           />
-          <label className="text-neutral-200">
+          <label className="text-neutral-200 pt-6 pb-1">
             Kataloga adrese/links
           </label>
           <input 
             type="text" name="link" 
-            className="px-3 bg-neutral-800 rounded-md focus:outline-none text-white py-1 placeholder:text-neutral-500"
-            placeholder="https://katalogs..."
+            className="px-3 bg-neutral-800 focus:bg-neutral-700 rounded-md focus:outline-none text-white py-1 placeholder:text-neutral-400"
+            placeholder="https://..."
             onChange={(e)=>onChangeCallback(e, inputLink)}
           />
           <button 
             type="sumbit"
             onSubmit={(e) => onSubmit(e)}
-            className="text-white bg-rose-700 hover:bg-rose-600 rounded-md px-4 py-1 mx-auto mt-2 shadow-sm shadow-neutral-800 active:translate-y-px"
+            className="text-white bg-rose-700 hover:bg-rose-600 rounded-md px-8 py-4 mx-auto mt-8 shadow-sm shadow-neutral-800 active:translate-y-px"
           >
             Pievienot
           </button>
         </form>
       </div>
-    </div>
   )
 }
