@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faGripHorizontal, faHomeAlt, faFileMedical, faSearch, faFile, faFilePdf }  from "@fortawesome/free-solid-svg-icons"
+import { faGripHorizontal, faHomeAlt, faFileMedical, faSearch, faFile, faFilePdf, faFileUpload }  from "@fortawesome/free-solid-svg-icons"
 import useWindowSize from "../../hooks/useWindowSize"
 
 const hoverText = "hover:text-white transition-width ease-out duration-500 delay-100";
@@ -61,9 +61,17 @@ export default function Navbar() {
           <Link to="/catalogues/add">
             <div className={`${liItemConStyles} ${hoverText}`}>
               <FontAwesomeIcon icon={faFileMedical} className={faIconStyles}/>
-              { isOpen && <div className={liItemTextStyles}>Izveidot katalogu</div> }
+              { isOpen && <div className={liItemTextStyles}>Pievienot linku</div> }
             </div>
           </Link>
+
+          <Link to="/catalogues/upload">
+            <div className={`${liItemConStyles} ${hoverText}`}>
+              <FontAwesomeIcon icon={faFileUpload} className={faIconStyles}/>
+              { isOpen && <div className={liItemTextStyles}>Augšuplādēt katalogu</div> }
+            </div>
+          </Link>
+
         </div>
 
         <div className={`${isOpen && "border-b border-b-neutral-600 pb-4"}`}>

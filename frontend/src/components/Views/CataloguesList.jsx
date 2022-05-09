@@ -25,7 +25,11 @@ export default function CatalogueList() {
     if(data.length > 0) {
       let newQRCodes = []
       data.map(async item => {
-        newQRCodes.push(await QRCode.toDataURL(`/catalogues/${item.link}`));
+        newQRCodes.push(await QRCode.toDataURL(item.link, { 
+          errorCorrectionLevel: "L",
+          margin: 4, 
+          color: { dark: item.color1, light: item.color2}
+        }));
       })
       setQRCoes(newQRCodes);
     }
@@ -51,7 +55,6 @@ export default function CatalogueList() {
                 <CatalogueCard imgSrc={item.qrCode} key={`qr-card-${index}`} id={item._id}  name={item.name} link={item.link}/>
               )}
             </div>
-
         </div>
       <div className="text-white">{(dataWithQR === undefined) && "List data is loading..."}</div>
       </div>
@@ -61,9 +64,9 @@ export default function CatalogueList() {
   function CatalogueCard({imgSrc, id, name, link}) {
     return(
       <div className="flex flex-col p-4 rounded-lg bg-neutral-800 hover:bg-neutral-700 max-w-[224px] w-full">
-        <img className="w-full rounded-lg pb-4" src={imgSrc} />
+        <img className="w-full rounded-lg mb-4 " src={imgSrc} />
         <div className="flex flex-col">
-          <div className="text-neutral-100 font-bold mb-2 cursor-default leading-5 line-clamp-2">
+          <div className="text-neutral-100 font-metrophobic font-bold mb-2 cursor-default leading-5 line-clamp-2">
             {name}
           </div>
           <a className="text-neutral-500 hover:text-white text-sm cursor-pointer leading-4 break-all line-clamp-2 " href={link}>

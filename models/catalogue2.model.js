@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const catalogueSchema = new Schema({
+const catalogue2Schema = new Schema({
   name: {
     type: String,
     required: true,
@@ -10,12 +10,9 @@ const catalogueSchema = new Schema({
     trim: true,
     minlength: 3
   },
-  link: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    minlength: 3
+  pdf: {
+    type: Buffer,
+
   },
   color1: {
     type: String,
@@ -31,6 +28,6 @@ const catalogueSchema = new Schema({
   timestamps: true
 })
 
-const Catalogue = mongoose.model("Catalogue", catalogueSchema);
+const Catalogue2 = mongoose.model("Catalogue2", catalogue2Schema);
 
-module.exports = Catalogue; 
+module.exports = Catalogue2; 
