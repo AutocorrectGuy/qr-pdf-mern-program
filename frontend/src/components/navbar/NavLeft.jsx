@@ -65,12 +65,14 @@ export default function Navbar() {
             </div>
           </Link>
 
-          <Link to="/catalogues/upload">
-            <div className={`${liItemConStyles} ${hoverText}`}>
+          {/* <Link to="/catalogues/upload"> */}
+          <div>
+            <div className={`${liItemConStyles} cursor-not-allowed`}>
               <FontAwesomeIcon icon={faFileUpload} className={faIconStyles}/>
               { isOpen && <div className={liItemTextStyles}>Augšuplādēt katalogu</div> }
             </div>
-          </Link>
+          </div>
+          {/* </Link> */}
 
         </div>
 

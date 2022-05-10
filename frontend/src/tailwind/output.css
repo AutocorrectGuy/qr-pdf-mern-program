@@ -544,42 +544,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   left: 7rem;
 }
 
-.left-\[200px\]{
-  left: 200px;
-}
-
-.left-\[100px\]{
-  left: 100px;
-}
-
-.left-\[110px\]{
-  left: 110px;
-}
-
-.left-\[105px\]{
-  left: 105px;
-}
-
-.left-\[101px\]{
-  left: 101px;
-}
-
-.left-\[102px\]{
-  left: 102px;
-}
-
-.left-\[20px\]{
-  left: 20px;
-}
-
-.left-\[30px\]{
-  left: 30px;
-}
-
-.left-\[35px\]{
-  left: 35px;
-}
-
 .-top-10{
   top: -2.5rem;
 }
@@ -813,16 +777,8 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: 11rem;
 }
 
-.h-\[400px\]{
-  height: 400px;
-}
-
 .h-full{
   height: 100%;
-}
-
-.h-\[300px\]{
-  height: 300px;
 }
 
 .h-fit{
@@ -897,6 +853,14 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .h-56{
   height: 14rem;
+}
+
+.h-\[400px\]{
+  height: 400px;
+}
+
+.h-\[300px\]{
+  height: 300px;
 }
 
 .max-h-max{
@@ -1012,6 +976,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: 14rem;
 }
 
+.min-w-full{
+  min-width: 100%;
+}
+
 .min-w-\[24px\]{
   min-width: 24px;
 }
@@ -1022,14 +990,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .min-w-\[45px\]{
   min-width: 45px;
-}
-
-.min-w-full{
-  min-width: 100%;
-}
-
-.max-w-\[224px\]{
-  max-width: 224px;
 }
 
 .max-w-lg{
@@ -1068,16 +1028,20 @@ Ensure the default browser behavior of the `hidden` attribute.
   max-width: 0rem;
 }
 
-.max-w-\[288px\]{
-  max-width: 288px;
-}
-
 .max-w-screen-md{
   max-width: 768px;
 }
 
 .max-w-md{
   max-width: 28rem;
+}
+
+.max-w-\[288px\]{
+  max-width: 288px;
+}
+
+.max-w-\[224px\]{
+  max-width: 224px;
 }
 
 .flex-grow{
