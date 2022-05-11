@@ -11,7 +11,7 @@ content-type: application/json
 }
 ###
 
-// List of all catalogue
+// List of all links
 GET http://localhost:3001/catalogues
 ###
 
@@ -23,3 +23,17 @@ GET http://localhost:3001/catalogues/627684ef1612b7274d949272
 DELETE http://localhost:3001/catalogues/62796bccc0e28931779dfdb3
 ###
 
+
+
+
+// List of all FILES
+GET http://localhost:3001/files
+###
+
+// Select one file JSON object
+GET http://localhost:3001/files/477893fe50a8aca4116b5abc9b785a94.png
+###
+
+// Select one file
+GET http://localhost:3001/readpdf/477893fe50a8aca4116b5abc9b785a94.png
+###

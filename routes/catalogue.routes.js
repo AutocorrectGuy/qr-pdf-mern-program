@@ -1,29 +1,42 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
+const mongoose = require('mongoose');
+
 
 let Catalogue = require("../models/catalogue.model");
-let Catalogue2 = require("../models/catalogue2.model");
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "../dist/uploads/")
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname)
-  },
-})
-
-const uploadStorage = multer({ 
-  storage: storage 
-})
+const mongoURI = process.env.ATLAS_URI;
+const conn = mongoose.createConnection(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+let gfs;
+conn.once('open', () => {
+  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: 'images',
+  });
+});
 
 /**
  * GET
  */
 router.get("/", (req, res) => {
+  let linksData = [], imageIds = [];
+
   Catalogue.find()
-    .then(catalogues => res.json(catalogues))
+    .then(catalogues => {linksData = catalogues;})
+    .then(() => {
+      gfs.find().toArray((err, files) => {
+        if (!files || files.length === 0) imageIds = []
+        else imageIds = files.map(({_id}) => _id);
+
+        let outData = JSON.stringify({
+          part1: linksData,
+          part2: imageIds
+        });
+
+        return res.status(200).json(outData)
+      })
+    })
     .catch(err => res.status(400).json(`Error +_+: ${err}`))
 })
 
@@ -49,24 +62,6 @@ router.post("/add", (req, res) => {
   newCatalogue.save()
     .then(() => res.json(`Catalogue "${catalogue.name}" added succesfully!`))
     .catch(err => res.status(400).json(`Error +_+: ${err}`))
-})
-
-// Single file
-router.post("/upload", uploadStorage.single("file"), (req, res) => {
-  const catalogue2 = {
-    name: req.body.name,
-    pdf: req.body.uploadFile,
-    color1: req.body.color1,
-    color2: req.body.color2
-  };
-  const newCatalogue2 = new Catalogue2(catalogue2);
-
-  newCatalogue2.save()
-    .then(() => res.json(`Catalogue2 "${catalogue2.name}" added succesfully!`))
-    .catch(err => res.status(400).json(`Error +_+: ${err}`))
-
-  console.log(req.file)
-  return res.json("Upload succesfull")
 })
 
 /**

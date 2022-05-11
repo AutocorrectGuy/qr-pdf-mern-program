@@ -1,13 +1,13 @@
 require("dotenv").config();
-const express = require('express');
-const cors = require("cors");
-const mongoose = require("mongoose");
 const path = require("path");
+const express = require('express');
+const mongoose = require("mongoose");
+const cors = require("cors");
+
+const catalogueRouter = require("./routes/catalogue.routes");
+const imageRouter = require("./routes/image.routes");
 
 const app = express();
-const buildPath = process.env.DEPLOY ? "./dist" : "./frontend/build";
-const catalogueRouter = require("./routes/catalogue.routes");
-
 const PORT = process.env.PORT || 5000;
 
 const whitelist = ['http://localhost:3001', `http://localhost:${PORT}`,  'https://qrkodi.herokuapp.com']
@@ -24,36 +24,22 @@ const corsOptions = {
   }
 }
 
-app.use(cors(corsOptions));
-app.use(express.static(buildPath));
-app.use(express.static(buildPath + "static/"));
-app.use(cors());
 app.use(express.json());
+app.use(cors(corsOptions));
+app.use(express.urlencoded({ extended: true }));
 
-/**
- * Connection to mongodb 
- */
-const uri = process.env.ATLAS_URI;
-mongoose.connect(uri);
-const connection = mongoose.connection;
-connection.once("open", () => {console.log("connected to mongodb succesfully")})
-
-/** 
- * Routes
- */
 app.use("/catalogues", catalogueRouter);
-app.get('/', function (req, res) {
-  res.sendFile(`${buildPath}/index.html`, (err) => {
-    res.json({"error": err})
-  });
-})
+app.use('/api/image', imageRouter);
 
 if(process.env.NODE_ENV === "production") {
+  app.use(express.static('frontend/build'));
   // server any static files
-  app.use(express.static(path.join(__dirname, "frontend/build")));
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "frontend/build", "index.html"))
+    res.sendFile(path.join(__dirname, 'frontend', 'build',  "index.html"))
   })
 }
 
-app.listen(PORT, console.log("Listening to port", PORT));
+mongoose.connect(process.env.ATLAS_URI)
+  .then(() => {
+    app.listen(PORT, () => {console.log(`Server is up on port ${PORT}!`)});
+  });

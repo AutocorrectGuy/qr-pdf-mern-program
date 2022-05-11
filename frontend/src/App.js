@@ -19,7 +19,7 @@ function App() {
           <Route path="/" element={<CataloguesList />} />
           <Route path="/catalogues/:id" element={<ViewCatalogue />} />
           <Route path="/catalogues/add" element={<CreateCatalogue />} />
-          <Route path="/catalogues/upload" element={<UploadCatalogue />} />
+          <Route path="/upload" element={<UploadCatalogue />} />
         </Routes>
         <NavRight />
       </div>
