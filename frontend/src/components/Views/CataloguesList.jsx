@@ -110,7 +110,7 @@ export default function CatalogueList() {
                     <div className="text-neutral-100 font-metrophobic font-bold mb-2 cursor-default leading-5 line-clamp-2">
                       {`Katalogs-${index}`}
                     </div>
-                    <Link to={`/api/pdf/${item._id}`} className="text-neutral-500 hover:text-white text-sm cursor-pointer leading-4 break-all line-clamp-2 ">{item._id}</Link>
+                    <a href={`${window.location.href}/api/pdf/${item._id}`} className="text-neutral-500 hover:text-white text-sm cursor-pointer leading-4 break-all line-clamp-2 ">{item._id}</a>
                   </div>  
               </div>
               )
