@@ -6,7 +6,7 @@ const UploadCatalogue = () => {
   const [file, setFile] = useState(null);
   const [inputContainsFile, setInputContainsFile] = useState(false);
   const [currentlyUploading, setCurrentlyUploading] = useState(false);
-  const [imageId, setImageId] = useState(null);
+  const [pdfId, setPdfId] = useState(null);
   const [progress, setProgress] = useState(null);
 
   const handleFile = (event) => {
@@ -16,9 +16,9 @@ const UploadCatalogue = () => {
 
   const fileUploadHandler = () => {
     const fd = new FormData();
-    fd.append('image', file, file.name);
+    fd.append('pdf', file, file.name);
     axios
-      .post(`/api/image/upload`, fd, {
+      .post(`/api/pdf/upload`, fd, {
         onUploadProgress: (progressEvent) => {
           setProgress((progressEvent.loaded / progressEvent.total) * 100);
           console.log(
@@ -28,7 +28,7 @@ const UploadCatalogue = () => {
         },
       })
       .then(({ data }) => {
-        setImageId(data);
+        setPdfId(data);
         setFile(null);
         setInputContainsFile(false);
         setCurrentlyUploading(false);
@@ -61,14 +61,10 @@ const UploadCatalogue = () => {
   return (
     <div className="bg-neutral-900 p-8 w-full flex flex-col items-center">
       <div className="border border-red-600 h-28 w-full flex flex-col justify-around items-center">
-        {imageId ? (
+        {pdfId ? (
           <>
-            <img
-              className='w-20 h-20 min-w-[80px] min-h-[80px] object-contain'
-              src={`/api/image/${imageId}`}
-              alt='uploaded image'
-            />
-            <a className='link' href={`/api/image/${imageId}`} target='_blank'>
+            <div className='text-white'>Katalogs augšuplādēts sekmīgi</div>
+            <a className='link' href={`/api/pdf/${pdfId}`} target='_blank'>
               link to picture
             </a>
           </>

@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const catalogueRouter = require("./routes/catalogue.routes");
-const imageRouter = require("./routes/image.routes");
+const pdfRouter = require("./routes/pdf.routes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,7 +29,7 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/catalogues", catalogueRouter);
-app.use('/api/image', imageRouter);
+app.use('/api/pdf', pdfRouter);
 
 if(process.env.NODE_ENV === "production") {
   app.use(express.static('frontend/build'));

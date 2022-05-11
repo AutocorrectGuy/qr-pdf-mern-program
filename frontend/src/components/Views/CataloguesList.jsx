@@ -53,7 +53,7 @@ export default function CatalogueList() {
     if(dataPart2.length > 0) {
       let newQRCodes = []
       dataPart2.map(async fileId => {
-        newQRCodes.push(await QRCode.toDataURL(`${window.location.href}/api/image/${fileId}`, { 
+        newQRCodes.push(await QRCode.toDataURL(`${window.location.href}api/pdf/${fileId}`, { 
           errorCorrectionLevel: "L",
           margin: 4, 
           color: { dark: "#000000", light:  "#FFFFFF"}
@@ -90,7 +90,6 @@ export default function CatalogueList() {
         </div>
       <div className="text-white">{(dataWithQR1 === undefined) && "List data is loading..."}</div>
       </div>
-      
     )
   }
 
@@ -109,9 +108,9 @@ export default function CatalogueList() {
                 <img className="w-full rounded-lg mb-4" src={item.qrCode}/>
                   <div className="flex flex-col">
                     <div className="text-neutral-100 font-metrophobic font-bold mb-2 cursor-default leading-5 line-clamp-2">
-                      {`Adrese-${index}`}
+                      {`Katalogs-${index}`}
                     </div>
-                    <Link to={`/api/image/${item._id}`} className="text-neutral-500 hover:text-white text-sm cursor-pointer leading-4 break-all line-clamp-2 ">{item._id}</Link>
+                    <Link to={`/api/pdf/${item._id}`} className="text-neutral-500 hover:text-white text-sm cursor-pointer leading-4 break-all line-clamp-2 ">{item._id}</Link>
                   </div>  
               </div>
               )

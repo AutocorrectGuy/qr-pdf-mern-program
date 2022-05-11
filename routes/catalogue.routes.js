@@ -12,7 +12,7 @@ const conn = mongoose.createConnection(mongoURI, {
 let gfs;
 conn.once('open', () => {
   gfs = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: 'images',
+    bucketName: 'pdfs',
   });
 });
 
@@ -20,18 +20,18 @@ conn.once('open', () => {
  * GET
  */
 router.get("/", (req, res) => {
-  let linksData = [], imageIds = [];
+  let linksData = [], pdfIds = [];
 
   Catalogue.find()
     .then(catalogues => {linksData = catalogues;})
     .then(() => {
       gfs.find().toArray((err, files) => {
-        if (!files || files.length === 0) imageIds = []
-        else imageIds = files.map(({_id}) => _id);
+        if (!files || files.length === 0) pdfIds = []
+        else pdfIds = files.map(({_id}) => _id);
 
         let outData = JSON.stringify({
           part1: linksData,
-          part2: imageIds
+          part2: pdfIds
         });
 
         return res.status(200).json(outData)
