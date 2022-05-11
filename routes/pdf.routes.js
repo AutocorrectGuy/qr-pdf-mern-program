@@ -67,7 +67,7 @@ const uploadMiddleware = (req, res, next) => {
 router.post('/upload/', uploadMiddleware, async (req, res) => {
   const { file } = req;
   const { id } = file;
-  if (file.size > 5000000) {
+  if (file.size > 50000000) {
     deletePdf(id);
     return res.status(400).send('file may not exceed 5mb');
   }
