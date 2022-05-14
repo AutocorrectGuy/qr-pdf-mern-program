@@ -1,24 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import axios from 'axios';
 import LoadingDots from "./loading-dots.gif"
+import {useDropzone} from 'react-dropzone'
 
-const UploadCatalogue = () => {
+
+const UploadPdf = () => {
   const [file, setFile] = useState(null);
   const [inputContainsFile, setInputContainsFile] = useState(false);
   const [currentlyUploading, setCurrentlyUploading] = useState(false);
   const [pdfId, setPdfId] = useState(null);
   const [progress, setProgress] = useState(null);
 
-  const handleFile = (event) => {
-    setFile(event.target.files[0]);
-    setInputContainsFile(true);
-  };
-
+  let colors = {
+    c1: "#fc00ff", c2: "#0f1572"
+  }
   const fileUploadHandler = () => {
     const fd = new FormData();
-    fd.append('pdf', file, file.name);
+    console.log(file);
+    fd.append('pdf', file, `${file.name}`);
+    fd.append("colors", `${colors.c1},${colors.c2}`);
+    fd.append("name", "My file name");
+    fd.append("author", "Monke Donkī");
     axios
-      .post(`/api/pdf/upload`, fd, {
+      .post(`/api/pdfs/upload`, fd, {
         onUploadProgress: (progressEvent) => {
           setProgress((progressEvent.loaded / progressEvent.total) * 100);
           console.log(
@@ -28,12 +32,14 @@ const UploadCatalogue = () => {
         },
       })
       .then(({ data }) => {
+        console.log("done axios");
         setPdfId(data);
         setFile(null);
         setInputContainsFile(false);
         setCurrentlyUploading(false);
       })
       .catch((err) => {
+        console.log("axios error");
         console.log(err);
         if (err.response.status === 400) {
           const errMsg = err.response.data;
@@ -52,55 +58,63 @@ const UploadCatalogue = () => {
       });
   };
 
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: (acceptedFile) => {
+      setFile(acceptedFile[0]);
+      setInputContainsFile(true);
+    },
+    multiple: false,
+    accept: {'application/pdf': ['.pdf']}
+  })
+
   const handleClick = () => {
     if (inputContainsFile) {
       setCurrentlyUploading(true);
       fileUploadHandler();
     }
   };
+  
   return (
     <div className="bg-neutral-900 p-8 w-full flex flex-col items-center">
-      <div className="border border-red-600 h-28 w-full flex flex-col justify-around items-center">
+      {/* <div className="border border-red-600 h-28 w-full flex flex-col justify-around items-center">
         {pdfId ? (
-          <>
-            <div className='text-white'>Katalogs augšuplādēts sekmīgi</div>
-            <a className='link' href={`/api/pdf/${pdfId}`} target='_blank'>
-              link to picture
-            </a>
-          </>
+          <div className='text-white'>Pdf fails augšuplādēts sekmīgi</div>
         ) : (
-          <p className='text-black'>no regular version pic yet</p>
+          <p className='text-neutral-400'>Ievelc PDF failu te</p>
         )}
+      </div> */}
+
+
+      <div className='bg-neutral-500 w-full h-full' {...getRootProps()}>
+        <input  {...getInputProps()}
+        />
+        <p>Drop files here</p>
       </div>
-      <div className='h-10 w-24'>
-        {currentlyUploading ? (
-          <img
+
+
+      <div>
+        {currentlyUploading && <img
             src={LoadingDots}
-            className='h-7 w-12'
-            alt='upload in progress'
+            className="h-12 w-12"
+            alt="upload in progress..."
           />
-        ) : (
-          <div className="flex justify-center border border-blue-500 w-full">
-            <input
-              className='w-[1px] h-[1px] opacity-0 overflow-hidden -z-40'
-              onChange={handleFile}
-              type='file'
-              name='file'
-              id='file'
-            />
-            <label
-              className={`flex w-full px-6 py-3 whitespace-nowrap full bg-red-700 hover:bg-red-600 text-white cursor-pointer
-               ${file && 'bg-green-700 hover:bg-green-600'}`}
-              htmlFor='file'
-              onClick={handleClick}
-            >
-              {file ? <>AUGŠUPLĀDĒT</> : <>IZVĒLĒTIES FAILU</>}
-            </label>
-          </div>
-        )}
+        }
+        { file!==null && !currentlyUploading && (
+          <button
+            className={`flex w-full h-full bg-blue-500 cursor-pointer`}
+            htmlFor='file' onClick={handleClick}
+          >
+          Augšuplādēt</button>)}
+
       </div>
+
+
+
+
+
+
     </div>
   );
 };
 
-export default UploadCatalogue;
+export default UploadPdf;

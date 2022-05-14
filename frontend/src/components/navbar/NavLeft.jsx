@@ -58,14 +58,14 @@ export default function Navbar() {
             </div>
           </div>
 
-          <Link to="/catalogues/add">
+          <Link to="/upload-link">
             <div className={`${liItemConStyles} ${hoverText}`}>
               <FontAwesomeIcon icon={faFileMedical} className={faIconStyles}/>
               { isOpen && <div className={liItemTextStyles}>Pievienot linku</div> }
             </div>
           </Link>
 
-          <Link to="/upload">
+          <Link to="upload-pdf">
           <div className={`${liItemConStyles} ${hoverText}`}>
               <FontAwesomeIcon icon={faFileUpload} className={faIconStyles}/>
               { isOpen && <div className={liItemTextStyles}>Augšuplādēt katalogu</div> }

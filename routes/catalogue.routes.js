@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
 
-
 let Catalogue = require("../models/catalogue.model");
+
 const mongoURI = process.env.ATLAS_URI;
 const conn = mongoose.createConnection(mongoURI, {
   useNewUrlParser: true,
@@ -17,45 +17,49 @@ conn.once('open', () => {
 });
 
 /**
- * GET
+ * GET '/catalogue'
  */
-router.get("/", (req, res) => {
-  let linksData = [], pdfIds = [];
+router.get("/get-links-and-pdfs-ids", (req, res) => {
+  let linksData = [], pdfFilesData = [];
 
   Catalogue.find()
     .then(catalogues => {linksData = catalogues;})
     .then(() => {
       gfs.find().toArray((err, files) => {
         if (!files || files.length === 0) pdfIds = []
-        else pdfIds = files.map(({_id}) => _id);
-
+        else pdfFilesData = files.map((pdfFile) => ({
+            _id: pdfFile._id,
+            name: pdfFile.metadata.name,
+            author: pdfFile.metadata.author,
+            colors: pdfFile.metadata.colors
+          }));
         let outData = JSON.stringify({
           part1: linksData,
-          part2: pdfIds
+          part2: pdfFilesData
         });
-
         return res.status(200).json(outData)
       })
     })
     .catch(err => res.status(400).json(`Error +_+: ${err}`))
 })
 
-router.get("/:id", (req, res) => {
-  console.log("gettting my catalogue :)");
-  Catalogue.findById(req.params.id)
-    .then(catalogues => res.json(catalogues))
-    .catch(err =>`Error +_+: ${err}`);
-})
+// router.get("/:id", (req, res) => {
+//   console.log("gettting my catalogue :)");
+//   Catalogue.findById(req.params.id)
+//     .then(catalogues => res.json(catalogues))
+//     .catch(err =>`Error +_+: ${err}`);
+// })
 
 /**
  * POST
  */
-router.post("/add", (req, res) => {
+router.post("/upload", (req, res) => {
   const catalogue = {
     name: req.body.name,
     link: req.body.link,
     color1: req.body.color1,
-    color2: req.body.color2
+    color2: req.body.color2,
+    author: req.body.username
   };
   const newCatalogue = new Catalogue(catalogue);
 

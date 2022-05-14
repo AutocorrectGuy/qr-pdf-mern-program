@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import CataloguesList from "./components/Views/CataloguesList"
-import CreateCatalogue from "./components/Views/CreateCatalogue";
+import UploadLink from "./components/Views/UploadLink";
 import ViewCatalogue from "./components/Views/ViewCatalogue";
-import UploadCatalogue from "./components/Views/UploadCatalogue";
+import UploadPdf from "./components/Views/UploadPdf";
 import NavLeft from "./components/navbar/NavLeft"
 import NavRight from "./components/navbar/NavRight"
 
@@ -17,9 +17,8 @@ function App() {
         <NavLeft />
         <Routes>
           <Route path="/" element={<CataloguesList />} />
-          <Route path="/catalogues/:id" element={<ViewCatalogue />} />
-          <Route path="/catalogues/add" element={<CreateCatalogue />} />
-          <Route path="/upload" element={<UploadCatalogue />} />
+          <Route path="/upload-link" element={<UploadLink />} />
+          <Route path="/upload-pdf" element={<UploadPdf />} />
         </Routes>
         <NavRight />
       </div>

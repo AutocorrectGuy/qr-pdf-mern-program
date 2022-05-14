@@ -13,14 +13,10 @@ const PORT = process.env.PORT || 5000;
 const whitelist = ['http://localhost:3001', `http://localhost:${PORT}`,  'https://qrkodi.herokuapp.com']
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log("** Origin of request " + origin)
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      console.log("Origin acceptable")
+    if (whitelist.indexOf(origin) !== -1 || !origin) 
       callback(null, true)
-    } else {
-      console.log("Origin rejected")
+     else 
       callback(new Error('Not allowed by CORS'))
-    }
   }
 }
 
@@ -28,8 +24,8 @@ app.use(express.json());
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/catalogues", catalogueRouter);
-app.use('/api/pdf', pdfRouter);
+app.use("/api/links", catalogueRouter);
+app.use('/api/pdfs', pdfRouter);
 
 if(process.env.NODE_ENV === "production") {
   app.use(express.static('frontend/build'));

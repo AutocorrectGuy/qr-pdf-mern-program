@@ -1,7 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faLink, faCopy, faUser }  from "@fortawesome/free-solid-svg-icons"
+import ReactTooltip from "react-tooltip";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 export default function CatalogueList() {
 
@@ -12,9 +15,9 @@ export default function CatalogueList() {
   const [dataWithQR1, setDataWithQR1] = useState();
   const [dataWithQR2, setDataWithQR2] = useState();
 
-  // get data from db
+  // fetch db data
   useEffect(() => {
-    axios.get("/catalogues")
+    axios.get("/api/links/get-links-and-pdfs-ids")
       // save data from database
       .then(res => {
         if(res.data.length > 0) {
@@ -25,7 +28,7 @@ export default function CatalogueList() {
       })
     }, [])
 
-  // get qr codes1
+  // generate qr-images for LINKS
   useEffect(() => {
     if(dataPart1.length > 0) {
       let newQRCodes = []
@@ -48,15 +51,17 @@ export default function CatalogueList() {
   }, [qrCodes1])
 
 
-  // get qr codes2
+  // generate qr-images for PDF-FILES
   useEffect(() => {
     if(dataPart2.length > 0) {
       let newQRCodes = []
-      dataPart2.map(async fileId => {
-        newQRCodes.push(await QRCode.toDataURL(`${window.location.href}api/pdf/${fileId}`, { 
+      dataPart2.map(async pdfFile => {
+        console.log(dataPart2);
+        let colors = pdfFile.colors.split(",");
+        newQRCodes.push(await QRCode.toDataURL(`${window.location.href}api/pdfs/${pdfFile._id}`, { 
           errorCorrectionLevel: "L",
           margin: 4, 
-          color: { dark: "#000000", light:  "#FFFFFF"}
+          color: { dark: colors[0], light: colors[1]}
         }));
       })
       setQRCoes2(newQRCodes);
@@ -65,9 +70,11 @@ export default function CatalogueList() {
 
   useEffect(() => {
     let oldData = dataPart2;    
-    let newData = oldData.map((fileId, index) => {
+    let newData = oldData.map((pdfFile, index) => {
       return ({
-        _id: fileId,
+        _id: pdfFile._id,
+        name: pdfFile.name,
+        author: pdfFile.author,
         qrCode: qrCodes2[index]
       })
 
@@ -75,16 +82,36 @@ export default function CatalogueList() {
     setDataWithQR2(newData)
   }, [qrCodes2])
 
-  // QRCode.toDataURL(stringToChange);
 
-  function CatalogueList() {
+  function PdfsList() {
     return(
       <div>
         <div className="p-10">
-            <div className="text-white text-3xl font-bold my-8 cursor-default">Katalogu saraksts</div>
+          <div className="text-white text-3xl font-bold my-8 cursor-default">Katalogu saraksts</div>
+          <div className="grid justify-center sm:justify-start gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
+            {(dataWithQR2 !== undefined) && dataWithQR2.map((pdfFile, index) => 
+              <DataCard 
+                targetLink={`${window.location.href}api/pdfs/${pdfFile._id}`} 
+                index={index} name={pdfFile.name} author={pdfFile.author} qrCode={pdfFile.qrCode} 
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function LinksList() {
+    return(
+      <div>
+        <div className="p-10">
+            <div className="text-white text-3xl font-bold my-8 cursor-default">Ārējo adrešu un katalogu saraksts</div>
             <div className="grid justify-center sm:justify-start gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
               {(dataWithQR1 !== undefined) && dataWithQR1.map((item, index) => 
-                <CatalogueCard imgSrc={item.qrCode} key={`qr-card-${index}`} id={item._id}  name={item.name} link={item.link}/>
+                <DataCard key={`card-links-${index}`}
+                  targetLink={item.link} 
+                  index={index} name={item.name} author={item.author} qrCode={item.qrCode} 
+                />
               )}
             </div>
         </div>
@@ -93,47 +120,40 @@ export default function CatalogueList() {
     )
   }
 
-  function Catalogue2List() {
+  function DataCard({name, author, qrCode, targetLink, index}) {
     return(
-      <div>
-        <div className="p-10">
-          <div className="text-white text-3xl font-bold my-8 cursor-default">Katalogu saraksts</div>
-          <div className="grid justify-center sm:justify-start gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
-            
-            {(dataWithQR2 !== undefined) && dataWithQR2.map((item, index) => 
-            {
-              console.log(dataWithQR2);
-              return(
-                <div key={`link-db-${index}`} className="flex flex-col p-4 rounded-lg bg-neutral-800 hover:bg-neutral-700 max-w-[224px] w-full">
-                <img className="w-full rounded-lg mb-4" src={item.qrCode}/>
-                  <div className="flex flex-col">
-                    <div className="text-neutral-100 font-metrophobic font-bold mb-2 cursor-default leading-5 line-clamp-2">
-                      {`Katalogs-${index}`}
-                    </div>
-                    <a href={`${window.location.href}api/pdf/${item._id}`} className="text-neutral-500 hover:text-white text-sm cursor-pointer leading-4 break-all line-clamp-2 ">{item._id}</a>
-                  </div>  
-              </div>
-              )
-            }
-
-            )}
+      <div key={`link-db-${index}`} className="flex flex-col p-4 rounded-lg bg-neutral-800 hover:bg-neutral-700 max-w-[224px] w-full">
+        <img className="w-full rounded-lg mb-4" src={qrCode}/>
+        <div className="flex flex-col h-full justify-between">
+          <div className="flex justify-between">
+            <div className="text-neutral-100 font-metrophobic font-bold mb-2 cursor-default leading-5 line-clamp-2">
+              {`${name}`}
+            </div>
+            <a href={targetLink} target="_blank" className="pl-1 text-neutral-500 hover:text-white cursor-pointer">
+              <FontAwesomeIcon 
+                data-tip data-for={`card-${name}-${author}`} 
+                icon={faLink} 
+                className={"w-5 h-5 text-neutral-600 hover:text-white active:translate-y-px"} />
+            </a>
+            <ReactTooltip 
+              effect="solid" clickable={true} delayShow={300} delayHide={200} type={"dark"}
+              id={`card-${name}-${author}`}> 
+                <div className="flex gap-2">
+                  <div className="cursor-default">{targetLink}</div>
+                  <CopyToClipboard text={targetLink}>
+                    <FontAwesomeIcon icon={faCopy} data-tip data-for={`pdf-link-copy-${index}`} 
+                      className={"w-5 h-5 text-neutral-400 hover:text-white cursor-pointer active:translate-y-px"}/>
+                  </CopyToClipboard>
+                </div>
+            </ReactTooltip>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  function CatalogueCard({imgSrc, id, name, link}) {
-    return(
-      <div className="flex flex-col p-4 rounded-lg bg-neutral-800 hover:bg-neutral-700 max-w-[224px] w-full">
-        <img className="w-full rounded-lg mb-4 " src={imgSrc} />
-        <div className="flex flex-col">
-          <div className="text-neutral-100 font-metrophobic font-bold mb-2 cursor-default leading-5 line-clamp-2">
-            {name}
+          <div className="flex items-center gap-1 cursor-pointer">
+            <FontAwesomeIcon icon={faUser} className="text-neutral-500 w-3 h-3"/>
+            <div className="text-neutral-500 text-sm leading-4 break-all line-clamp-2">
+              {`${author}`}
+            </div> 
           </div>
-          <a className="text-neutral-500 hover:text-white text-sm cursor-pointer leading-4 break-all line-clamp-2 " href={link}>
-            {link}
-          </a>
+                   
         </div>  
       </div>
     )
@@ -144,8 +164,8 @@ export default function CatalogueList() {
       <div className="absolute -z-10 flex justify-center max-w-screen w-full bg-gradient-to-b from-neutral-700 to-neutral-800 brightness-50 h-[400px]"></div>
       <div className="absolute -z-20 flex justify-center max-w-screen w-full bg-neutral-800 brightness-50 max-h-max h-full"></div>
       <div className="flex flex-col">
-        <Catalogue2List />
-        <CatalogueList />
+        <PdfsList />
+        <LinksList />
       </div>
     </div>
   )
