@@ -88,7 +88,8 @@ export default function CatalogueList() {
       <div>
         <div className="p-10">
           <div className="text-white text-3xl font-bold my-8 cursor-default">Katalogu saraksts</div>
-          <div className="grid justify-center sm:justify-start gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
+          
+          <div className="flex flex-col items-center sm:items-stretch sm:grid justify-center gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
             {(dataWithQR2 !== undefined) && dataWithQR2.map((pdfFile, index) => 
               <DataCard 
                 targetLink={`${window.location.href}api/pdfs/${pdfFile._id}`} 
@@ -106,7 +107,7 @@ export default function CatalogueList() {
       <div>
         <div className="p-10">
             <div className="text-white text-3xl font-bold my-8 cursor-default">Ārējo adrešu un katalogu saraksts</div>
-            <div className="grid justify-center sm:justify-start gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
+            <div className="flex flex-col items-center sm:items-stretch sm:grid justify-center gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
               {(dataWithQR1 !== undefined) && dataWithQR1.map((item, index) => 
                 <DataCard key={`card-links-${index}`}
                   targetLink={item.link} 
@@ -122,7 +123,7 @@ export default function CatalogueList() {
 
   function DataCard({name, author, qrCode, targetLink, index}) {
     return(
-      <div key={`link-db-${index}`} className="flex flex-col p-4 rounded-lg bg-neutral-800 hover:bg-neutral-700 max-w-[224px] w-full">
+      <div key={`link-db-${index}`} className="flex flex-col p-4 rounded-lg bg-neutral-800 hover:bg-neutral-700 max-w-[300px] sm:max-w-[224px] w-full">
         <img className="w-full rounded-lg mb-4" src={qrCode}/>
         <div className="flex flex-col h-full justify-between">
           <div className="flex justify-between">

@@ -1,4 +1,4 @@
-import { ChromePicker } from "react-color";
+import { SketchPicker } from "react-color";
 import { useState } from "react";
 
 export default  function MyColorPicker({labelName, color, colorInex, outputColorRef}) {
@@ -11,7 +11,7 @@ export default  function MyColorPicker({labelName, color, colorInex, outputColor
   }
 
   return(
-    <div className="relative flex h-fit" onMouseMove={(e) => {e.preventDefault()}}>
+    <div className="flex h-fit" onMouseMove={(e) => {e.preventDefault()}}>
       <div 
         onClick={()=> {setOpen1(!open1)}}
         className={`w-8 h-8 transition-colors duration-300 rounded-md z-0`}
@@ -19,18 +19,17 @@ export default  function MyColorPicker({labelName, color, colorInex, outputColor
       ></div>
       <div className="pl-2 text-neutral-200 stroke-black pr-2">{labelName}</div>
       {open1 && 
-        <div className="bg-green-400">
+        <div>
           <div className="fixed top-0 left-0 w-full h-full bg-black opacity-90 transition-opacity duration-300 z-40"
             onClick={() => {setOpen1(false)}}
-          ></div>
-          <div className="absolute ml-3 -top-[280px] left-0 w-56 h-56 z-50 text-white uppercase font-bold text-center">{labelName}</div>
-          <div className="absolute ml-3 -top-60 left-0 w-56 h-56 rounded-md z-50" style={{backgroundColor: col1}}></div>
-          <ChromePicker 
-            className="absolute ml-3 top-0 left-0 overflow-hidden h-48 bg-red-600 z-50" 
-            color={col1} 
-            onChange={(color) => setCol1(color.hex)}
-            onChangeComplete={(color) => onColorChangeComplete(color)}
-          />
+          >
+          </div>
+            <SketchPicker 
+              className="scale-150 fixed border top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 overflow-hidden bg-red-600 z-50"  
+              color={col1} 
+              onChange={(color) => setCol1(color.hex)}
+              onChangeComplete={(color) => onColorChangeComplete(color)}
+            />
         </div>
       }
     </div>

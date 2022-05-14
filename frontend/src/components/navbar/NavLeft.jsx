@@ -15,28 +15,23 @@ export default function Navbar() {
   const [isOpen, setOpen] = useState(null);
   const size = useWindowSize();
 
-  useEffect(()=> {
-    console.log(window.innerWidth);
-    setOpen(window.innerWidth < 1100 ? false : true);
-  }, [])
+  useEffect(()=> { setOpen(window.innerWidth < 1100 ? false : true); }, [])
 
   useEffect(() => {
-    if(size.width < 640 && isOpen) toggleKebab();
-    else if (size.width >= 640 && !isOpen) toggleKebab();
+    if(size.width < 1024 && isOpen) setOpen(false);
+    else if (size.width >= 1024 && !isOpen) toggleKebab();
   }, [size])
 
   function toggleKebab() { setOpen(!isOpen) };
+  function closeKebabIfSmallScreen() {if(size.width < 640) setOpen(false)};
 
   return(
     <div 
-      className={`transition-width ease-out duration-300 z-10 
-        flex flex-col bg-black gap-6 h-fit fixed p-3 sm:p-7 sm:static sm:min-h-screen 
+      className={`fixed transition-width ease-out duration-300 z-10 flex flex-col bg-black gap-6 p-3 sm:p-7 sm:static 
         ${isOpen 
           ? "min-w-[288px] max-w-[288px] min-h-screen" 
           : "min-w-[45px] sm:min-w-[80px] items-center bg-transparent sm:bg-black"}`}>
-      <div className="flex items-center sm:block"
-        onClick={toggleKebab}
-      >
+      <div onClick={toggleKebab} className="flex items-center sm:block">
         <FontAwesomeIcon icon={faGripHorizontal} 
           className={`${faIconStyles} 
           bg-black bg-opacity-30 hover:bg-opacity-100 rounded-full p-3 sm:p-0 text-neutral-300 hover:text-white cursor-pointer`}/>
@@ -44,7 +39,7 @@ export default function Navbar() {
 
       <div className={`${!isOpen && "hidden sm:block"}`}>
         <div className="pb-4">
-          <Link to="/">
+          <Link to="/" onClick={closeKebabIfSmallScreen}>
             <div className={`${liItemConStyles} ${hoverText}`}>
               <FontAwesomeIcon icon={faHomeAlt} className={faIconStyles}/>
               { isOpen && <div className={`${liItemTextStyles} -translate-x-[3px]`}>Sākums</div> }
@@ -58,14 +53,14 @@ export default function Navbar() {
             </div>
           </div>
 
-          <Link to="/upload-link">
+          <Link to="/upload-link" onClick={closeKebabIfSmallScreen}>
             <div className={`${liItemConStyles} ${hoverText}`}>
               <FontAwesomeIcon icon={faFileMedical} className={faIconStyles}/>
               { isOpen && <div className={liItemTextStyles}>Pievienot linku</div> }
             </div>
           </Link>
 
-          <Link to="upload-pdf">
+          <Link to="upload-pdf" onClick={closeKebabIfSmallScreen}>
           <div className={`${liItemConStyles} ${hoverText}`}>
               <FontAwesomeIcon icon={faFileUpload} className={faIconStyles}/>
               { isOpen && <div className={liItemTextStyles}>Augšuplādēt katalogu</div> }

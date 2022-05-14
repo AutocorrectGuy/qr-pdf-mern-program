@@ -55,12 +55,12 @@ export default function UploadLink() {
 
           <form onSubmit={(e) => onSubmit(e)}
 
-            className="flex w-full my-auto flex-col text-xl bg-neutral-800 bg-opacity-40 rounded-md p-8 h-fit">
+            className="flex w-full my-auto flex-col text-lg bg-neutral-800 bg-opacity-40 rounded-md p-8 h-fit">
             <label className="text-neutral-200 pb-1">
               Kataloga nosaukums
             </label>
             <input 
-              type="text" name="name" 
+              type="text" name="name" autoComplete="off"
               className="px-3 bg-neutral-800 focus:bg-neutral-700 rounded-md focus:outline-none text-white py-1 placeholder:text-neutral-400"
               placeholder="..."
               onChange={(e)=>onChangeCallback(e, inputName)}
@@ -69,14 +69,14 @@ export default function UploadLink() {
             <label className="text-neutral-200 pt-6 pb-1">
               Kataloga adrese/links
             </label>
-            <input 
+            <input autoComplete="off"
               type="text" name="link" 
               className="px-3 bg-neutral-800 focus:bg-neutral-700 rounded-md focus:outline-none text-white py-1 placeholder:text-neutral-400"
               placeholder="https://..."
               onChange={(e)=>onChangeCallback(e, inputLink)}
             />
 
-            <div className="flex flex-col gap-4 mt-8">
+            <div className="flex flex-col gap-2 mt-8">
               <MyColorPicker labelName="raksta krāsa" color={"#000000"} colorInex={0} outputColorRef={outputColors}/>
               <MyColorPicker labelName="fona krāsa" color={ "#FFFFFF"} colorInex={1} outputColorRef={outputColors}/>
             </div>

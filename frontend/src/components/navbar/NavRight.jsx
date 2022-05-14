@@ -28,30 +28,28 @@ export default function Navbar() {
   }, [])
 
   useEffect(() => {
-    if(size.width < 640 && isOpen) toggleKebab();
-    else if (size.width >= 640 && !isOpen) toggleKebab();
+    if(size.width < 1024 && isOpen) setOpen(false);
+    else if (size.width >= 1024 && !isOpen) toggleKebab();
   }, [size])
 
   function toggleKebab() { setOpen(!isOpen) };
 
-  function toggleKebab() {
-    setOpen(!isOpen);
-  }
+  function toggleKebab() { setOpen(!isOpen) };
+  function closeKebabIfSmallScreen() {if(size.width < 640) setOpen(false)};
   
 
   return(
     <div 
-      className={`transition-width ease-out duration-300 z-10 
-        flex flex-col bg-black gap-6 h-fit fixed right-0 p-3 sm:p-7 sm:static sm:min-h-screen 
+      className={`fixed transition-width ease-out duration-300 z-10 flex flex-col bg-black
+        gap-6 right-0 p-3 lg:p-7 lg:static top-0 bottom-0 
         ${isOpen 
           ? "min-w-[288px] max-w-[288px] min-h-screen" 
-          : "min-w-[45px] sm:min-w-[80px] items-center bg-transparent sm:bg-black"}`}>
-      <div className="flex items-center sm:block max-w-[288px]"
-        onClick={toggleKebab}
+          : "min-w-[45px] sm:min-w-[80px] items-center bg-transparent lg:bg-black"}`}>
+      <div className="flex items-center lg:block max-w-[288px]"
       >
         <div>
           <div className="flex justify-end">
-          <FontAwesomeIcon icon={faInfoCircle} 
+          <FontAwesomeIcon icon={faInfoCircle} onClick={toggleKebab}
             className={`${faIconStyles} 
             bg-black bg-opacity-30 hover:bg-opacity-100 rounded-full p-3 sm:p-0 text-neutral-300 hover:text-white cursor-pointer`}/>
             </div>      
