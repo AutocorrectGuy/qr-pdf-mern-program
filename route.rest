@@ -12,22 +12,22 @@ content-type: application/json
 ###
 
 // List of all links
-GET http://localhost:3001/catalogues
+GET http://localhost:3001/api/links/get-links-and-pdfs-ids
 ###
 
 // Select one
-GET http://localhost:3001/catalogues/627684ef1612b7274d949272
+GET http://localhost:3001/api/pdfs/627684ef1612b7274d949272
 ###
 
 // Delete one 
-DELETE http://localhost:3001/catalogues/62796bccc0e28931779dfdb3
+DELETE http://localhost:3001/api/links/627ea2a0fc626afe341333a2
 ###
 
 
 
 
 // List of all FILES
-GET http://localhost:3001/files
+GET http://localhost:3001/api/pdfs/get-files-ids
 ###
 
 // Select one file JSON object
