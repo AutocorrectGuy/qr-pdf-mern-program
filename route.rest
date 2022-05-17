@@ -26,14 +26,19 @@ DELETE http://localhost:3001/api/links/627ea2a0fc626afe341333a2
 
 
 
-// List of all FILES
-GET http://localhost:3001/api/pdfs/get-files-ids
+// fetch main page data
+GET http://localhost:3001/api/links/get-links-and-pdfs-ids
 ###
 
 // Select one file JSON object
-GET http://localhost:3001/files/477893fe50a8aca4116b5abc9b785a94.png
+GET http://localhost:3001/api/pdfs/json/627eabdc1192da0b3d44c893
 ###
 
-// Select one file
-GET http://localhost:3001/readpdf/477893fe50a8aca4116b5abc9b785a94.png
+// Delete one file
+DELETE http://localhost:3001/api/pdfs/delete/62827c3762f4ac289932c729
+
+###
+// Delete one file
+GET http://localhost:3001/api/pdfs/getall
+
 ###
