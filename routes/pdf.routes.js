@@ -22,7 +22,6 @@ const storage = new GridFsStorage({
   url: mongoURI,
   options: { useUnifiedTopology: true },
   file: (req, file) => {
-    console.log(JSON.stringify(req.body));
     return new Promise((resolve, reject) => {
       crypto.randomBytes(16, (err, buf) => {
         if (err) return reject(err);
@@ -31,9 +30,9 @@ const storage = new GridFsStorage({
           bucketName: 'pdfs',
           filename: filename,
           metadata: { 
-            name: "katalogs",
-            author: "user",
-            colors: "#bfd8ff,#001c4a"
+            name: "Katalogs",
+            author: "Author",
+            colors: "User",
           }
         };
         resolve(fileInfo);
@@ -58,7 +57,7 @@ function checkFileType(file, cb) {
 }
 
 const uploadMiddleware = (req, res, next) => {
-  // const upload = store.single('pdf');
+  const upload = store.single('pdf');
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       return res.status(400).send('Faila izmērs ir pārāk liels. Tam jābāut < 50 mb.');

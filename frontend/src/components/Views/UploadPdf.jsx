@@ -24,7 +24,6 @@ const UploadPdf = () => {
     fd.append("colors", `${outputColors.current[0]},${outputColors.current[1]}`);
     fd.append("name", catalogueName);
     fd.append("author", "Developer");
-    console.log(fd);
     axios
       .post(`/api/pdfs/upload`, fd, {
         onUploadProgress: (progressEvent) => {
