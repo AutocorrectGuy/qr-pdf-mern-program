@@ -43,15 +43,13 @@ export default function UploadLink() {
       .catch(err => console.log(`Error ${err}`));
   }
 
-
   return(
       <div className="relative flex justify-center w-full min-h-screen px-6">
-        <div className="absolute -z-10 flex justify-center max-w-screen w-full bg-gradient-to-b from-teal-900 brightness-50 to-neutral-800 h-[300px]"></div>
+        <div className="absolute -z-10 flex justify-center max-w-screen w-full bg-gradient-to-b from-neutral-900 brightness-50 to-neutral-800 h-[300px]"></div>
         <div className="absolute -z-20 flex justify-center max-w-screen w-full bg-neutral-800 brightness-50 max-h-max h-full"></div>
         <div className="flex max-w-md w-full items-center">
 
           <form onSubmit={(e) => onSubmit(e)}
-
             className="flex w-full my-auto flex-col text-lg bg-neutral-800 bg-opacity-40 rounded-md p-8 h-fit">
             <label className="text-neutral-200 pb-1">
               Kataloga nosaukums
@@ -81,7 +79,7 @@ export default function UploadLink() {
             <button 
               type="sumbit"
               onSubmit={(e) => onSubmit(e)}
-              className="text-white bg-rose-700 hover:bg-rose-600 rounded-md px-8 py-4 mx-auto mt-8 shadow-sm shadow-neutral-800 active:translate-y-px"
+              className="text-white font-semibold bg-blue-700 hover:bg-blue-600 rounded-md px-8 py-4 mx-auto mt-8 shadow-sm shadow-neutral-800 active:translate-y-px"
             >
               Pievienot
             </button>

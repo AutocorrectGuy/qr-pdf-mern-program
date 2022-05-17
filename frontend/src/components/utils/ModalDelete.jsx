@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useState } from "react";
 
-export default function ModalDelete({deleteModalOpen, setDeleteModalOpen, name, id}) {
+export default function ModalDelete({setDeleteModalOpen, name, id, type}) {
 
   const [inputValue, setInputValue] = useState("");
   
   function handleClick() {
     if (inputValue !== name) return;
-    axios.delete(`/api/pdfs/delete/${id}`)
+    axios.delete(`/api/${type}/delete/${id}`)
       .then(() => {
         window.location = '/';
       })
@@ -19,14 +19,14 @@ export default function ModalDelete({deleteModalOpen, setDeleteModalOpen, name, 
       onClick={() => setDeleteModalOpen(false)}>
     </div>
     <div className="fixed right-1/2 translate-x-1/2 top-6 flex flex-col p-10 bg-neutral-700 text-white rounded-sm shadow-lg shadow-neutral-900 max-w-[450px] w-full z-20">
-      <div className="pb-10 pt-5 text-3xl font-bold border-b border-b-neutral-600">Kataloga dzēšana</div>
+      <div className="pb-10 pt-5 text-3xl font-bold border-b border-b-neutral-600">{`${type === "pdfs" ? "Katalog" : "Link"}a dzēšana`}</div>
       <div className="flex flex-col py-10 border-b border-b-neutral-600">
         <div className="mb-3">
-          <label className="leading-4 text-sm text-neutral-200 font-normal float-left">Ja tiešām vēlaties dzēst katalogu&nbsp;</label>
-          <label className="leading-4 text-sm text-white font-bold float-left cursor-text">{`"${name}", `}&nbsp;</label>
-          <label className="leading-4 text-sm text-neutral-200 font-normal float-left">veiciet apstiprinājumu, ievadot šī kataloga nosaukumu.</label>
+          <label className="leading-5 text-sm text-neutral-200 font-normal float-left">{`Ja tiešām vēlaties dzēst ${type === "pdfs" ? "katalog" : "kink"}u`}&nbsp;</label>
+          <label className="leading-5 text-sm text-white font-bold float-left cursor-text">{`"${name}", `}&nbsp;</label>
+          <label className="leading-5 text-sm text-neutral-200 font-normal float-left">{`veiciet apstiprinājumu, ievadot šī ${type === "pdfs" ? "katalog" : "link"}a nosaukumu`}</label>
         </div>
-        <input type="text" placeholder="Ievadiet kataloga nosaukumu"
+        <input type="text" placeholder={`Ievadiet ${type === "pdfs" ? "katalog" : "link"}a nosaukumu`}
           className="bg-neutral-600 text-white text-sm placeholder:text-neutral-400 p-2 rounded-sm"
           onChange={(e) => setInputValue(e.target.value)}
           ></input>

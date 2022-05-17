@@ -4,7 +4,7 @@ const router = require('express').Router();
 const multer = require('multer');
 const crypto = require('crypto');
 const path = require('path');
-const Catalogue = require("../models/pdf.model");
+const PdfModel = require("../models/pdf.model");
 require('dotenv').config();
 
 const mongoURI = process.env.ATLAS_URI;
@@ -100,7 +100,7 @@ router.get('/file/:id', ({ params: { id } }, res) => {
 });
 
 router.get('/json/:id', (req, res) => {
-  Catalogue.findById(req.params.id)
+  PdfModel.findById(req.params.id)
     .then(data => res.json(data))
     .catch(err =>`There is no such file in database. ${err}`);
 });

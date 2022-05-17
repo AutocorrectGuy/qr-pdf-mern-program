@@ -1894,6 +1894,21 @@ Ensure the default browser behavior of the `hidden` attribute.
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(82 82 82 / 0));
 }
 
+.from-blue-800{
+  --tw-gradient-from: #1e40af;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(30 64 175 / 0));
+}
+
+.from-blue-500{
+  --tw-gradient-from: #3b82f6;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(59 130 246 / 0));
+}
+
+.from-neutral-900{
+  --tw-gradient-from: #171717;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(23 23 23 / 0));
+}
+
 .to-neutral-800{
   --tw-gradient-to: #262626;
 }
@@ -2255,6 +2270,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .leading-3{
   line-height: .75rem;
+}
+
+.leading-6{
+  line-height: 1.5rem;
 }
 
 .text-white{

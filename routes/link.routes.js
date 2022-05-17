@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
-
 const Catalogue = require("../models/catalogue.model");
 
 const mongoURI = process.env.ATLAS_URI;
@@ -16,10 +15,36 @@ conn.once('open', () => {
   });
 });
 
+router.post("/upload", (req, res) => {
+  const catalogue = {
+    name: req.body.name,
+    link: req.body.link,
+    color1: req.body.color1,
+    color2: req.body.color2,
+    author: req.body.username
+  };
+  const newCatalogue = new Catalogue(catalogue);
+  newCatalogue.save()
+    .then(() => res.json(`Catalogue "${catalogue.name}" added succesfully!`))
+    .catch(err => res.status(400).json(`Error +_+: ${err}`))
+})
+
+router.get('/json/:id', (req, res) => {
+  Catalogue.findById(req.params.id)
+    .then(data => res.json(data))
+    .catch(err =>`There is no such file in database. ${err}`);
+});
+
+router.delete("/delete/:id", (req, res) => {
+  Catalogue.findByIdAndDelete(req.params.id)
+    .then(data => res.json("Catalogue deleted succesfully"))
+    .catch(err =>`Error +_+: ${err}`);
+})
+
 /**
- * GET '/catalogue'
+ * merges from "link.routes and pdf.routes"
  */
-router.get("/get-links-and-pdfs-ids", (req, res) => {
+ router.get("/get-links-and-pdfs-ids", (req, res) => {
   let linksData = [], pdfFilesData = [];
 
   Catalogue.find()
@@ -41,41 +66,6 @@ router.get("/get-links-and-pdfs-ids", (req, res) => {
       })
     })
     .catch(err => res.status(400).json(`Error +_+: ${err}`))
-})
-
-// router.get("/:id", (req, res) => {
-//   console.log("gettting my catalogue :)");
-//   Catalogue.findById(req.params.id)
-//     .then(catalogues => res.json(catalogues))
-//     .catch(err =>`Error +_+: ${err}`);
-// })
-
-/**
- * POST
- */
-router.post("/upload", (req, res) => {
-  const catalogue = {
-    name: req.body.name,
-    link: req.body.link,
-    color1: req.body.color1,
-    color2: req.body.color2,
-    author: req.body.username
-  };
-  const newCatalogue = new Catalogue(catalogue);
-
-  newCatalogue.save()
-    .then(() => res.json(`Catalogue "${catalogue.name}" added succesfully!`))
-    .catch(err => res.status(400).json(`Error +_+: ${err}`))
-})
-
-/**
- * DELETE
- */
-
-router.delete("/:id", (req, res) => {
-  Catalogue.findByIdAndDelete(req.params.id)
-    .then(data => res.json("Catalogue deleted succesfully"))
-    .catch(err =>`Error +_+: ${err}`);
 })
 
 module.exports = router; 
