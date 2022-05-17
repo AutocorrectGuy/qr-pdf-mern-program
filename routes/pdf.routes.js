@@ -73,7 +73,6 @@ const uploadMiddleware = (req, res, next) => {
 
 router.post('/upload/', uploadMiddleware, async (req, res) => {
   const { file } = req;
-  console.log(JSON.stringify(file));
   const { id } = file;
   if (file.size > 50000000) {
     deletePdf(id);
