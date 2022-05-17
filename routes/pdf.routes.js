@@ -10,12 +10,15 @@ require('dotenv').config();
 const mongoURI = process.env.ATLAS_URI;
 
 mongoose.connect(mongoURI);
-const db = mongoose.connection;
+const db = mongoose.createConnection(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 let gfs;
 db.once("open", () => {
-  gfs = new mongoose.mongo.GridFSBucket(db, { bucketName: 'pdfs' });
+  gfs = new mongoose.mongo.GridFSBucket(db.db, { bucketName: 'pdfs' });
 })
 
 const storage = new GridFsStorage({
@@ -24,25 +27,23 @@ const storage = new GridFsStorage({
   file: (req, file) => {
     return new Promise((resolve, reject) => {
       crypto.randomBytes(16, (err, buf) => {
-        if (err) return reject(err);
+        if (err) {
+          return reject(err);
+        }
         const filename = buf.toString('hex') + path.extname(file.originalname);
-        const fileInfo = { 
-          bucketName: 'pdfs',
+        const fileInfo = {
           filename: filename,
-          metadata: { 
-            name: "Katalogs",
-            author: "Author",
-            colors: "User",
-          }
+          bucketName: 'pdfs',
+          metadata: req.body
         };
         resolve(fileInfo);
       });
     });
-  },
+  }
 });
 
 const store = multer({
-  storage, limits: { fileSize: 20000000 },
+  storage, limits: { fileSize: 50000000 },
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb);
   },
@@ -72,6 +73,7 @@ const uploadMiddleware = (req, res, next) => {
 
 router.post('/upload/', uploadMiddleware, async (req, res) => {
   const { file } = req;
+  console.log(JSON.stringify(file));
   const { id } = file;
   if (file.size > 50000000) {
     deletePdf(id);

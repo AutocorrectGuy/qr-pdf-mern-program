@@ -20,10 +20,12 @@ const UploadPdf = () => {
 
   const fileUploadHandler = () => {
     const fd = new FormData();
-    fd.append('pdf', file, `${file.name}`);
+    fd.append('pdf', file, file.name);
     fd.append("colors", `${outputColors.current[0]},${outputColors.current[1]}`);
     fd.append("name", catalogueName);
     fd.append("author", "Developer");
+    console.log(JSON.stringify(fd));
+    console.log(fd);
     axios
       .post(`/api/pdfs/upload`, fd, {
         onUploadProgress: (progressEvent) => {

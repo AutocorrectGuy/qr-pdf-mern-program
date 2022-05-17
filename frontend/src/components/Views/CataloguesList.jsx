@@ -35,11 +35,20 @@ export default function CatalogueList() {
   }, [dataPart1])
 
   useEffect(() => {
+    let oldData = dataPart1;
+    oldData.map((item, index) => 
+      item.qrCode = qrCodes1[index]
+    )
+    setDataWithQR1(oldData)
+  }, [qrCodes1])
+
+  // generate qr-images for PDF Files
+  useEffect(() => {
     if(dataPart2.length === 0) return;
-    let newQRCodes = []
-    dataPart2.map(async pdfFile => {
-      let colors = pdfFile.colors.split(",");
-      newQRCodes.push(await QRCode.toDataURL(`${window.location.href}api/pdfs/file/${pdfFile._id}`, { 
+    let newQRCodes = [];
+    dataPart2.map(async item => {
+      let colors = item.colors.split(",");
+      newQRCodes.push(await QRCode.toDataURL(`${window.location.href}api/pdfs/file/${item._id}`, { 
         errorCorrectionLevel: "L", margin: 4, color: { dark: colors[0], light: colors[1]}
       }));
     })
@@ -48,13 +57,7 @@ export default function CatalogueList() {
 
 
 
-  useEffect(() => {
-    let oldData = dataPart1;
-    oldData.map((item, index) => 
-      item.qrCode = qrCodes1[index]
-    )
-    setDataWithQR1(oldData)
-  }, [qrCodes1])
+
 
   useEffect(() => {
     let oldData = dataPart2;    
