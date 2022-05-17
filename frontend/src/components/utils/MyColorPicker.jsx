@@ -25,7 +25,7 @@ export default  function MyColorPicker({labelName, color, colorInex, outputColor
           >
           </div>
             <SketchPicker 
-              className="scale-150 fixed border top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 overflow-hidden bg-red-600 z-50"  
+              className="w-full scale-125 fixed border top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 overflow-hidden bg-red-600 z-50"  
               color={col1} 
               onChange={(color) => setCol1(color.hex)}
               onChangeComplete={(color) => onColorChangeComplete(color)}

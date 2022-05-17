@@ -4,25 +4,25 @@ const router = require('express').Router();
 const multer = require('multer');
 const crypto = require('crypto');
 const path = require('path');
+const Catalogue = require("../models/pdf.model");
 require('dotenv').config();
 
 const mongoURI = process.env.ATLAS_URI;
-const conn = mongoose.createConnection(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+
+mongoose.connect(mongoURI);
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
 
 let gfs;
-conn.once('open', () => {
-  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: 'pdfs',
-  });
-});
+db.once("open", () => {
+  gfs = new mongoose.mongo.GridFSBucket(db, { bucketName: 'pdfs' });
+})
 
 const storage = new GridFsStorage({
   url: mongoURI,
   options: { useUnifiedTopology: true },
   file: (req, file) => {
+    console.log(JSON.stringify(req.body));
     return new Promise((resolve, reject) => {
       crypto.randomBytes(16, (err, buf) => {
         if (err) return reject(err);
@@ -31,9 +31,9 @@ const storage = new GridFsStorage({
           bucketName: 'pdfs',
           filename: filename,
           metadata: { 
-            name: req.body.name,
-            author: req.body.author,
-            colors: req.body.colors,
+            name: "katalogs",
+            author: "user",
+            colors: "#bfd8ff,#001c4a"
           }
         };
         resolve(fileInfo);
@@ -42,7 +42,6 @@ const storage = new GridFsStorage({
   },
 });
 
-// set up our multer to use the gridfs storage defined above
 const store = multer({
   storage, limits: { fileSize: 20000000 },
   fileFilter: function (req, file, cb) {
@@ -59,17 +58,18 @@ function checkFileType(file, cb) {
 }
 
 const uploadMiddleware = (req, res, next) => {
-  const upload = store.single('pdf');
+  // const upload = store.single('pdf');
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
-      return res.status(400).send('File too large');
+      return res.status(400).send('Faila izmērs ir pārāk liels. Tam jābāut < 50 mb.');
     } else if (err) {
-      if (err === 'filetype') return res.status(400).send('Pdf files only');
+      if (err === 'filetype') return res.status(400).send('Iespējams augšupādēt tikai PDF faila tipu (.pdf).');
       return res.sendStatus(500);
     }
     next();
   });
 };
+
 
 router.post('/upload/', uploadMiddleware, async (req, res) => {
   const { file } = req;
@@ -83,19 +83,12 @@ router.post('/upload/', uploadMiddleware, async (req, res) => {
 
 const deletePdf = (id) => {
   if (!id || id === 'undefined') return res.status(400).send('no pdf id');
-  const _id = new mongoose.Types.ObjectId(id);
-  gfs.delete(_id, (err) => {
+  gfs.delete(mongoose.Types.ObjectId(id), (err) => {
     if (err) return res.status(500).send('Pdf deletion error');
   });
 };
 
-router.delete(("delete/:id", (req, res) => {
-  gfs.delete(req.params.id, (err) => {
-    if (err) return res.status(500).send('Pdf deletion error');
-  });
-}))
-
-router.get('/:id', ({ params: { id } }, res) => {
+router.get('/file/:id', ({ params: { id } }, res) => {
   if (!id || id === 'undefined') return res.status(400).send('no pdf id');
   const _id = new mongoose.Types.ObjectId(id);
   gfs.find({ _id }).toArray((err, files) => {
@@ -105,21 +98,21 @@ router.get('/:id', ({ params: { id } }, res) => {
   });
 });
 
-// find all file _ids
-// router.get("/get-files-ids", (req, res) => {
-//   gfs.find().toArray((err, files) => {
-//     if(!files || files.length === 0) 
-//       return res.status(404).json({err: "Datubāzē nav failu vai nosūtīts nepareizs pieprasījums"})
-    
-//     let outData = files.map(({pdfFile}) => ({
-//       _id: pdfFile._id,
-//       name: pdfFile.name,
-//       colors: pdfFile.metadata.colors
-//     }));
-//     console.log(outData);
-//     return res.json(outData);
-//   })
-// })
+router.get('/json/:id', (req, res) => {
+  Catalogue.findById(req.params.id)
+    .then(data => res.json(data))
+    .catch(err =>`There is no such file in database. ${err}`);
+});
 
+router.delete("/delete/:id", ({ params: { id } }, res) => {
+  if (!id || id === 'undefined') return res.status(400).send('no pdf id (to delete)');
+  gfs.delete(mongoose.Types.ObjectId(id), (err) => {
+    if (err) return res.status(500).send('Pdf deletion error');
+    else res.status(200).send("Deletion succesfull");
+  })
+})
 
+// router.get('/getall', (req, res) => {
+//   res.json({"asdasd":"asdasdasd"})
+// });
 module.exports = router;

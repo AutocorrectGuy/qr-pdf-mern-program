@@ -39,10 +39,7 @@ export default function UploadLink() {
       color2: outputColors.current[1],
       username: "Developer"
     })
-      .then(res => {
-        console.log(res.data)
-        window.location = '/';
-      })
+      .then(res => { window.location = '/' })
       .catch(err => console.log(`Error ${err}`));
   }
 

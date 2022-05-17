@@ -24,6 +24,7 @@ const UploadPdf = () => {
     fd.append("colors", `${outputColors.current[0]},${outputColors.current[1]}`);
     fd.append("name", catalogueName);
     fd.append("author", "Developer");
+    console.log(fd);
     axios
       .post(`/api/pdfs/upload`, fd, {
         onUploadProgress: (progressEvent) => {
@@ -101,12 +102,16 @@ const UploadPdf = () => {
         </div>
 
         <div className={`flex flex-col lg:flex-row w-full gap-5 ${file!==null ? "min-h-[50%] lg:min-h-[200px]" : ""}`}>
-          {/* {currentlyUploading && <img
+          {currentlyUploading && 
+          <div className='flex w-full h-full items-center justify-center bg-black rounded-md'>
+            <img
               src={LoadingDots}
               className="h-12 w-12"
               alt="upload in progress..."
             />
-          } */}
+          </div>
+  
+          }
           { file!==null && !currentlyUploading && (
             <>
               <form className={`${catalogueName.length < 3 ? "border-blue-700" : "border-neutral-700"} border-2 border-dashed flex w-full h-fit my-auto flex-col text-lg bg-neutral-800 bg-opacity-40 rounded-md p-5 justify-center`}>

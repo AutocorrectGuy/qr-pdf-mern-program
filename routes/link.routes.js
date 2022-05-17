@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
 
-let Catalogue = require("../models/catalogue.model");
+const Catalogue = require("../models/catalogue.model");
 
 const mongoURI = process.env.ATLAS_URI;
 const conn = mongoose.createConnection(mongoURI, {
@@ -23,7 +23,7 @@ router.get("/get-links-and-pdfs-ids", (req, res) => {
   let linksData = [], pdfFilesData = [];
 
   Catalogue.find()
-    .then(catalogues => {linksData = catalogues;})
+    .then(catalogues => {linksData = catalogues})
     .then(() => {
       gfs.find().toArray((err, files) => {
         if (!files || files.length === 0) pdfIds = []
