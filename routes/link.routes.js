@@ -35,6 +35,17 @@ router.get('/json/:id', (req, res) => {
     .catch(err =>`There is no such file in database. ${err}`);
 });
 
+router.put('/update/:id', (req, res) => {
+  Catalogue.findByIdAndUpdate(req.params.id, {
+    name: req.body.name,
+    author: req.body.author,
+    color1: req.body.color1,
+    color2: req.body.color2
+  })
+    .then(data => res.json(data))
+    .catch(err =>`There is no such file in database. ${err}`);
+});
+
 router.delete("/delete/:id", (req, res) => {
   Catalogue.findByIdAndDelete(req.params.id)
     .then(data => res.json("Catalogue deleted succesfully"))

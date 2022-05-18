@@ -23,15 +23,7 @@ export default function UploadLink() {
    * !U#Y!@#&!---- SUMBIT POST DATA TO THE DATABASE ----!#&##Y!&@#!
    */
   function onSubmit(e) {
-    e.preventDefault();
-    console.log("Before posting to db: ", {
-      name: inputName.current, 
-      link: inputLink.current,
-      color1: outputColors.current[0],
-      color2: outputColors.current[1],
-      author: "Developer"
-    });
-    
+    e.preventDefault();  
     axios.post("/api/links/upload", {
       name: inputName.current, 
       link: inputLink.current,
@@ -78,7 +70,6 @@ export default function UploadLink() {
 
             <button 
               type="sumbit"
-              onSubmit={(e) => onSubmit(e)}
               className="text-white font-semibold bg-blue-700 hover:bg-blue-600 rounded-md px-8 py-4 mx-auto mt-8 shadow-sm shadow-neutral-800 active:translate-y-px"
             >
               Pievienot

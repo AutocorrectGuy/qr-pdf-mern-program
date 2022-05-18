@@ -70,7 +70,6 @@ const uploadMiddleware = (req, res, next) => {
   });
 };
 
-
 router.post('/upload/', uploadMiddleware, async (req, res) => {
   const { file } = req;
   const { id } = file;
@@ -98,8 +97,21 @@ router.get('/file/:id', ({ params: { id } }, res) => {
   });
 });
 
-router.get('/json/:id', (req, res) => {
-  PdfModel.findById(req.params.id)
+router.get('/json/:id', ({ params: { id } }, res) => {
+  PdfModel.findById(id)
+    .then(data => res.json(data))
+    .catch(err =>`There is no such file in database. ${err}`);
+});
+
+
+router.put('/update/:id', (req, res) => {
+  PdfModel.findByIdAndUpdate(req.params.id, {
+    metadata: {
+      name: req.body.name,
+      author: req.body.author,
+      colors: req.body.colors
+    }
+  })
     .then(data => res.json(data))
     .catch(err =>`There is no such file in database. ${err}`);
 });
@@ -112,7 +124,4 @@ router.delete("/delete/:id", ({ params: { id } }, res) => {
   })
 })
 
-// router.get('/getall', (req, res) => {
-//   res.json({"asdasd":"asdasdasd"})
-// });
 module.exports = router;
