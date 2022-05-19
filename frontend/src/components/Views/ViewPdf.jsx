@@ -6,7 +6,10 @@ import ModalDelete from "../utils/ModalDelete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink, faCopy } from "@fortawesome/free-solid-svg-icons";
 import CopyToClipboard from "react-copy-to-clipboard";
-import ReactTooltip from "react-tooltip";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import NavLeft from "../navbar/NavLeft"
+import NavRight from "../navbar/NavRight"
 
 const dataKeys = {
   name: "Nosaukums", 
@@ -23,15 +26,19 @@ const dataKeys = {
 const wrapperClass    = "flex flex-col sm:flex-row px-2 hover:bg-neutral-400 hover:bg-opacity-10 rounded-sm";
 const textLeftClass   = "text-neutral-400 select-none w-[200px] sm:w-[230px] py-2";
 const textRightClass  = "text-neutral-100 py-2";
-const inputClass      = "px-2 sm:my-[2px] py-2 sm:py-0 min-w-[1px] max-w-[300px] w-full bg-neutral-800 focus:bg-neutral-700 rounded-sm focus:outline-none text-white";
+const inputClass      = "flex px-2 sm:my-[2px] py-2 sm:py-0 min-w-[1px] max-w-[300px] w-full bg-neutral-800 focus:bg-neutral-700 rounded-sm focus:outline-none text-white";
 
-export default function Test() {
+export default function ViewPdf() {
+  const [cookies] = useCookies([]);
+  const navigate = useNavigate();
+  useEffect(() => { if (cookies.jwt === undefined) { navigate("/login") }}, [cookies, navigate]);
+
   const params = useParams();
-
   const [data, setData] = useState([]);
   const [qrCode, setQRCode] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const firstUpdate = useRef(true);
+  const fullHref = useRef(`${window.location.host}/api/pdfs/file/${params.id}`);
   // editing data
   const [editiongMode, setEditingMode] = useState(false);
   const [name, setName] = useState(null);
@@ -84,6 +91,8 @@ export default function Test() {
       .catch(err => console.log(`Error ${err}`));
   }
   return(
+    <>
+    <NavLeft />
     <div className="relative flex flex-col w-full min-h-screen">
       <div className={`absolute -z-10 flex justify-center max-w-screen w-full brightness-[25%] h-[300px]`}
       style={{background: `linear-gradient(${data.length !== 0 ? data.metadata.colors.split(",")[1] : "#52525b"}, #52525b)`}}></div>
@@ -148,30 +157,29 @@ export default function Test() {
                 <div className={textRightClass}>{data.uploadDate}</div>
               </div>
 
-
-
-              {/* <div className={wrapperClass}>
+              <div className={wrapperClass}>
                 <div className={textLeftClass}>{dataKeys.link}</div>
+                <input className={`${inputClass} bg-opacity-40`} value={fullHref.current} type="text" />
                 <div className={textRightClass}>
-                  <CopyToClipboard text={`${window.location.href.replace("api/pdfs", "api/pdfs/file")}`}>
+                  <CopyToClipboard text={fullHref.current}>
                     <FontAwesomeIcon icon={faCopy}
-                      className={"w-5 h-5 text-neutral-400 hover:text-white cursor-pointer active:translate-y-px"}/>
+                      className={"w-5 h-5 ml-1 text-neutral-400 hover:text-white cursor-pointer active:translate-y-px"}/>
                   </CopyToClipboard>
                 </div>
-              </div> */}
-
+              </div>
               
               <div className={wrapperClass}>
                 <div className={`${textLeftClass} whitespace-nowrap`}>{dataKeys.qrCode}</div>
+                <input className={`${inputClass} bg-opacity-40`} value={qrCode} type="text" />
                 <div className={`${textRightClass} overflow-x-hidden max-w-sm`}>
                 <CopyToClipboard text={qrCode}>
                   <FontAwesomeIcon icon={faCopy}
-                    className={"w-5 h-5 text-neutral-400 hover:text-white cursor-pointer active:translate-y-px"}/>
+                    className={"w-5 h-5 ml-1 text-neutral-400 hover:text-white cursor-pointer active:translate-y-px"}/>
                 </CopyToClipboard>
                 </div>
               </div>
               <div className="flex flex-col my-10 border border-neutral-800 rounded-md">
-                <div className="flex justify-between items-center p-4 gap-1 border-t border-t-neutral-800 border-b border-b-neutral-800">
+                <div className="flex justify-between items-center p-4 gap-2 border-t border-t-neutral-800 border-b border-b-neutral-800">
                   <div className="flex flex-col">
                     <p className="text-neutral-300 font-semibold text-sm">Apskatīt PDF failu</p>
                     <p className="text-neutral-300 font-normal text-sm">Fails pašlaik tiek glabāts iekšējā datubāzē un tam iespējams piekļūt tikai caur norādīto konkrēto linku. No šī linka arī tiek veidots qr kods.</p>
@@ -186,7 +194,7 @@ export default function Test() {
                     />
                   </a>
                 </div>
-                <div className="flex justify-between gap-1 p-4 items-center">
+                <div className="flex justify-between gap-2 p-4 items-center">
                   <div className="flex flex-col gap-2">
                     <p className="text-neutral-300 font-semibold text-sm">Ieraksta metadatu rediģēšana</p>
                     <p className="text-neutral-300 font-normal text-sm">Pēc rediģēšanas dati tiks atjaunoti datubāzē. Šie meta-dati ir pievienoti ierakstam datubāzē, taču nav pievienoti pašam PDF failam.</p>
@@ -202,7 +210,7 @@ export default function Test() {
                     }
                   </form>
                 </div>
-                <div className="flex justify-between items-center p-4 gap-1 border-t border-t-neutral-800">
+                <div className="flex justify-between items-center p-4 gap-2 border-t border-t-neutral-800">
                   <div className="flex flex-col">
                     <p className="text-neutral-300 font-semibold text-sm">Ieraksta dzēšana</p>
                     <p className="text-neutral-300 font-normal text-sm">Rezultātā no datu bāzes neatgriezeniski tiks dzēsts pats PDF fails kopā ar šo ierakstu, tajā skaitā, qr kods, kā arī līdzšinējā adrese uz šo pdf failu. </p>
@@ -221,5 +229,7 @@ export default function Test() {
         }
       </div>
     </div>
+    <NavRight />
+    </>
   );
 }

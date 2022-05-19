@@ -2,8 +2,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import Card from "../utils/Card"
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import NavLeft from "../navbar/NavLeft"
+import NavRight from "../navbar/NavRight"
 
 export default function CatalogueList() {
+  const [cookies] = useCookies([]);
+  const navigate = useNavigate();
+  useEffect(() => { if (cookies.jwt === undefined) { navigate("/login") }}, [cookies, navigate]);
 
   const [dataPart1, setDataPart1] = useState([]);
   const [dataPart2, setDataPart2] = useState([]);
@@ -114,6 +121,8 @@ export default function CatalogueList() {
   }
 
   return(
+    <>
+    <NavLeft />
     <div className="relative flex justify-center w-full min-h-screen">
       <div className="absolute -z-10 flex justify-center max-w-screen w-full bg-gradient-to-b from-neutral-700 to-neutral-800 brightness-50 h-[400px]"></div>
       <div className="absolute -z-20 flex justify-center max-w-screen w-full bg-neutral-800 brightness-50 max-h-max h-full"></div>
@@ -122,5 +131,7 @@ export default function CatalogueList() {
         <LinksList />
       </div>
     </div>
+    <NavRight />
+    </>
   )
 }

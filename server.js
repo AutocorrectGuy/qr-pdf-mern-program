@@ -4,9 +4,11 @@ const express = require('express');
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser')
 
 const linkRouter = require("./routes/link.routes");
 const pdfRouter = require("./routes/pdf.routes");
+const authRouter = require("./routes/authorization.routes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -22,6 +24,7 @@ const corsOptions = {
 }
 
 app.use(express.json());
+app.use(cookieParser())
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({
   extended: true
@@ -29,7 +32,9 @@ app.use(bodyParser.urlencoded({
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/links", linkRouter);
-app.use('/api/pdfs', pdfRouter);
+app.use("/api/pdfs", pdfRouter);
+app.use("/auth", authRouter);
+
 
 if(process.env.NODE_ENV === "production") {
   app.use(express.static('frontend/build'));

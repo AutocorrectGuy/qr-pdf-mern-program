@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import LoadingDots from "./loading-dots.gif"
 import {useDropzone} from 'react-dropzone'
@@ -6,9 +6,16 @@ import MyColorPicker from '../utils/MyColorPicker';
 import ReactTooltip from "react-tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUpload }  from "@fortawesome/free-solid-svg-icons"
-
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import NavLeft from "../navbar/NavLeft"
+import NavRight from "../navbar/NavRight"
 
 const UploadPdf = () => {
+  const [cookies] = useCookies([]);
+  const navigate = useNavigate();
+  useEffect(() => { if (cookies.jwt === undefined) { navigate("/login") }}, [cookies, navigate]);
+
   const [file, setFile] = useState(null);
   const [inputContainsFile, setInputContainsFile] = useState(false);
   const [currentlyUploading, setCurrentlyUploading] = useState(false);
@@ -80,6 +87,8 @@ const UploadPdf = () => {
   };
   
   return (
+    <>
+    <NavLeft />
     <div className="max-w-screen w-full h-screen">
       <div className={`flex flex-col items-center w-full h-full bg-neutral-900 p-8 ${file!==null ? "gap-5" : ""}`}>
         <div className={`${file===null && "border-dashed border-2 border-blue-700"} flex items-center justify-center w-full h-full rounded-md 
@@ -147,6 +156,8 @@ const UploadPdf = () => {
         </div>
       </div>
     </div>
+    <NavRight />
+    </>
   );
 };
 

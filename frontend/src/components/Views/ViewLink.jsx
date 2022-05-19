@@ -4,7 +4,12 @@ import QRCode from "qrcode";
 import axios from "axios";
 import ModalDelete from "../utils/ModalDelete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faCopy } from "@fortawesome/free-solid-svg-icons";
+import CopyToClipboard from "react-copy-to-clipboard";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import NavLeft from "../navbar/NavLeft"
+import NavRight from "../navbar/NavRight"
 
 const dataKeys = {
   name: "Nosaukums", 
@@ -12,7 +17,8 @@ const dataKeys = {
   _id: "Id", 
   uploadDate: "Publicesanas datums", 
   color1: "QR koda raksts", 
-  color2: "QR koda fons"
+  color2: "QR koda fons",
+  link: "Links",
 }
 
 const wrapperClass    = "flex flex-col sm:flex-row px-2 hover:bg-neutral-400 hover:bg-opacity-10 rounded-sm";
@@ -21,8 +27,11 @@ const textRightClass  = "text-neutral-100 py-2";
 const inputClass      = "px-2 sm:my-[2px] py-2 sm:py-0 min-w-[1px] max-w-[300px] w-full bg-neutral-800 focus:bg-neutral-700 rounded-sm focus:outline-none text-white";
 
 export default function Test() {
-  const params = useParams();
+  const [cookies] = useCookies([]);
+  const navigate = useNavigate();
+  useEffect(() => { if (cookies.jwt === undefined) { navigate("/login") }}, [cookies, navigate]);
 
+  const params = useParams();
   const [data, setData] = useState([]);
   const [qrCode, setQRCode] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -80,6 +89,8 @@ export default function Test() {
   }
 
   return(
+    <>
+    <NavLeft />
     <div className="relative flex flex-col w-full min-h-screen">
       <div className={`absolute -z-10 flex justify-center max-w-screen w-full brightness-[25%] h-[300px]`}
       style={{background: `linear-gradient(${data.length !== 0 ? data.color2 : "#52525b"}, #52525b)`}}></div>
@@ -140,8 +151,18 @@ export default function Test() {
                 <div className={textLeftClass}>{dataKeys.uploadDate}</div>
                 <div className={textRightClass}>{data.createdAt}</div>
               </div>
+              <div className={wrapperClass}>
+                <div className={textLeftClass}>{dataKeys.link}</div>
+                <input className={`${inputClass} bg-opacity-40`} value={data.link} type="text" />
+                <div className={textRightClass}>
+                  <CopyToClipboard text={data.link}>
+                    <FontAwesomeIcon icon={faCopy}
+                      className={"w-5 h-5 ml-1 text-neutral-400 hover:text-white cursor-pointer active:translate-y-px"}/>
+                  </CopyToClipboard>
+                </div>
+              </div>
               <div className="flex flex-col my-10 border border-neutral-800 rounded-md">
-                <div className="flex justify-between items-center p-4 gap-1 border-t border-t-neutral-800 border-b border-b-neutral-800">
+                <div className="flex justify-between items-center p-4 gap-2 border-t border-t-neutral-800 border-b border-b-neutral-800">
                   <div className="flex flex-col">
                     <p className="text-neutral-300 font-semibold text-sm">Apskatīt saiti</p>
                     <p className="text-neutral-300 font-normal text-sm">Jaunā cilnē tiks atvērts datubāzē saglabātais links. No šī linka ir ģenerēts qr kods. Šajā adresē netiek glabāts fails no iekšējās datu bāzes un to arī nevajadzētu darīt.</p>
@@ -153,7 +174,7 @@ export default function Test() {
                     <FontAwesomeIcon icon={faLink} className="text-sky-600 w-4 h-4 ml-1"/>
                   </a>
                 </div>
-                <div className="flex justify-between p-4 gap-1 items-center">
+                <div className="flex justify-between p-4 gap-2 items-center">
                   <div className="flex flex-col gap-2">
                     <p className="text-neutral-300 font-semibold text-sm">Ieraksta rediģēšana</p>
                     <p className="text-neutral-300 font-normal text-sm">Pēc rediģēšanas dati tiks atjaunoti datubāzē. Redzamie dati veido ierakstu datubāzē.</p>
@@ -169,7 +190,7 @@ export default function Test() {
                     }
                   </form>
                 </div>
-                <div className="flex justify-between items-center p-4 gap-1 border-t border-t-neutral-800">
+                <div className="flex justify-between items-center p-4 gap-2 border-t border-t-neutral-800">
                   <div className="flex flex-col">
                     <p className="text-neutral-300 font-semibold text-sm">Ieraksta dzēšana</p>
                     <p className="text-neutral-300 font-normal text-sm">Rezultātā no datu bāzes neatgriezeniski tiks dzēsts links kopā ar šo ierakstu, tajā skaitā, qr kods. </p>
@@ -183,12 +204,12 @@ export default function Test() {
                   }
                 </div>
               </div>
-
-                  
             </div>
           </div>
         }
       </div>
     </div>
+    <NavRight />
+    </>
   );
 }

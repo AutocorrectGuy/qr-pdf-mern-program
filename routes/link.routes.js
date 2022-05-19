@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
 const Catalogue = require("../models/catalogue.model");
+const { checkUser } = require("../middleware/auth.middleware");
 
 const mongoURI = process.env.ATLAS_URI;
 const conn = mongoose.createConnection(mongoURI, {
@@ -77,6 +78,10 @@ router.delete("/delete/:id", (req, res) => {
       })
     })
     .catch(err => res.status(400).json(`Error +_+: ${err}`))
+})
+
+router.get("/asd", (req, res) => {
+  res.status(200).json({"x":"1"});
 })
 
 module.exports = router; 
