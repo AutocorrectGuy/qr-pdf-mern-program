@@ -18,10 +18,8 @@ function Login() {
     event.preventDefault();
     try {
       const { data } = await axios.post(
-        "/auth/login",
-        {
-          ...values,
-        },
+        "/auth/login", 
+        { ...values }, 
         { withCredentials: true }
       );
       if (data) {
