@@ -24,12 +24,21 @@ const corsConfig = {
 
 app.use(express.json());
 app.use(cookieParser())
-app.use(cors(corsConfig));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/links", linkRouter);
 app.use("/api/pdfs", pdfRouter);
 app.use("/auth", authRouter);
+app.use(cors(corsConfig));
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header(
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept'
+  );
+  next();
+});
 
 if(process.env.NODE_ENV === "production") {
   app.use(express.static('frontend/build'));
