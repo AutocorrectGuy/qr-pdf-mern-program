@@ -36,9 +36,40 @@ GET http://localhost:3001/api/pdfs/json/627eabdc1192da0b3d44c893
 
 // Delete one file
 DELETE http://localhost:3001/api/pdfs/delete/62827c3762f4ac289932c729
-
 ###
+
 // Delete one file
 GET http://localhost:3001/api/pdfs/getall
+###
 
+// --------- REGISTER
+
+POST http://localhost:3001/auth/signup
+content-type: application/json
+
+{ 
+  "username": "User1",
+  "password": "Password1"
+}
+###
+
+// --------- LOGIN
+POST http://localhost:3001/auth/login
+content-type: application/json
+
+{ 
+  "username": "User1",
+  "password": "Password1"
+}
+###
+
+GET http://localhost:3001/auth/test
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyODUwMDRjYjFlM2IxODNiNGYxNzI5NyIsImlhdCI6MTY1Mjg5NTQwNywiZXhwIjoxNjUyODk1NDM3fQ._OnxmoLvH_10BUVkPk4gjegrotVbPCgmWsS7_2rFIwU
+###
+
+GET http://localhost:3001/auth/logout
+###
+
+GET http://localhost:3001/auth/refresh
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyODUwMDRjYjFlM2IxODNiNGYxNzI5NyIsImlhdCI6MTY1Mjg5NTIxNSwiZXhwIjoxNjUyODk1MjQ1fQ.wM7a7m14SuCFaz7Hb72HVal58J4v0dxuKqosuI_J2ZQ
 ###
