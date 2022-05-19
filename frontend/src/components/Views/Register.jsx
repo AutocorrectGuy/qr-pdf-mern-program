@@ -19,7 +19,6 @@ function Register() {
     });
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(values);
     try {
       const { data } = await axios.post(
         "/auth/register",
