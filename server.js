@@ -31,8 +31,6 @@ app.use("/api/links", linkRouter);
 app.use("/api/pdfs", pdfRouter);
 app.use("/auth", authRouter);
 
-app.options('*', cors(corsConfig));
-
 if(process.env.NODE_ENV === "production") {
   app.use(express.static('frontend/build'));
   // server any static files
