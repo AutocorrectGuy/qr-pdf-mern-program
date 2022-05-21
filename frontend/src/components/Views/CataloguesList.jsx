@@ -1,36 +1,68 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import QRCode from "qrcode";
 import Card from "../utils/Card"
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
 import NavLeft from "../navbar/NavLeft"
 import NavRight from "../navbar/NavRight"
+import { ToastContainer, toast } from "react-toastify";
+import { toastPropsRegular, tostConPropsRegular} from "../utils/ToastProps"
+import { useCookies } from "react-cookie";
 
 export default function CatalogueList() {
-  const [cookies] = useCookies([]);
-  const navigate = useNavigate();
-  useEffect(() => { if (cookies.jwt === undefined) { navigate("/login") }}, [cookies, navigate]);
 
+  const navigate = useNavigate();
+  const firstUpdate = useRef(true);
   const [dataPart1, setDataPart1] = useState([]);
   const [dataPart2, setDataPart2] = useState([]);
   const [qrCodes1, setQRCoes1] = useState([]);
   const [qrCodes2, setQRCoes2] = useState([]);
   const [dataWithQR1, setDataWithQR1] = useState(null);
   const [dataWithQR2, setDataWithQR2] = useState(null);
+  const [cookies, setCookie, removeCookie] = useCookies([]);
+  const [userData, setUserData] = useState([]);
+
+  useEffect(() => { 
+    axios.defaults.baseURL = 'http://localhost:3001';
+    axios.get("/api/links/get-links-and-pdfs-ids", {
+      headers: {
+        'Authorization': `Basic token` 
+      }
+    })
+      .then(res => {
+        // convert convert json object to javascript object
+        let dataObj = JSON.parse(res.data);
+        // Lock 1: recieved empty object from database
+        if(res.data.length === 0) navigate("/login");
+        // Lock 2: recieved 
+        if(dataObj.token === {} || dataObj.token === undefined) navigate("/login")
+        setUserData(dataObj?.token);
+        setDataPart1(dataObj?.part1)
+        setDataPart2(dataObj?.part2);
+      })
+      .catch(function (error) {
+        if(error.response.status === 401 || 
+          error.response.status === 403 || 
+          error.response.status === 404) 
+           navigate("/login");
+        });
+  }, []);
+  
+
 
   useEffect(() => {
-    axios.get("/api/links/get-links-and-pdfs-ids")
-      .then(res => {
-        if(res.data.length === 0) return;
-        let dataObj = JSON.parse(res.data);
-        setDataPart1(dataObj.part1);
-        setDataPart2(dataObj.part2);
-      })
-    }, [])
+    if (firstUpdate.current) { firstUpdate.current = false; return }
+    if (cookies.hello !== undefined) {
+      toast(`Welocme. ${userData.username}`, toastPropsRegular);
+      removeCookie("hello");
+    }
+    
+  }, [userData])
 
   // generate qr-images for LINKS
   useEffect(() => {
+    if (firstUpdate.current) { firstUpdate.current = false; return }
+    
     if(dataPart1.length === 0) return;
     let newQRCodes = []
     dataPart1.map(async item => {
@@ -61,10 +93,6 @@ export default function CatalogueList() {
     })
     setQRCoes2(newQRCodes);
   }, [dataPart2])
-
-
-
-
 
   useEffect(() => {
     let oldData = dataPart2;    
@@ -127,10 +155,19 @@ export default function CatalogueList() {
       <div className="absolute -z-10 flex justify-center max-w-screen w-full bg-gradient-to-b from-neutral-700 to-neutral-800 brightness-50 h-[400px]"></div>
       <div className="absolute -z-20 flex justify-center max-w-screen w-full bg-neutral-800 brightness-50 max-h-max h-full"></div>
       <div className="flex flex-col">
+        <div> 
+          {
+          userData ? <div className="text-white">{userData.username}</div>
+          :<div className="text-red-400">User data not recieved!</div>
+          }
+        </div>
         <PdfsList />
         <LinksList />
       </div>
     </div>
+    <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}
+      newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover
+    />
     <NavRight />
     </>
   )
