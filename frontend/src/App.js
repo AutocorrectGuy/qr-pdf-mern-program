@@ -5,12 +5,11 @@ import UploadLink from "./components/Views/UploadLink";
 import ViewPdf from "./components/Views/ViewPdf";
 import ViewLink from "./components/Views/ViewLink";
 import UploadPdf from "./components/Views/UploadPdf";
-import NavLeft from "./components/navbar/NavLeft"
-import NavRight from "./components/navbar/NavRight"
 import Secret from "./components/Views/Secret";
 import Login from "./components/Views/Login";
 import Register from "./components/Views/Register";
 import NotFoundPage from "./components/Views/NotFoundPage";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   

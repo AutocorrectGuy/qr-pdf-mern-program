@@ -3,3 +3,7 @@
 @tailwind base;
 @tailwind utilities;
 @tailwind components;
+
+.Toastify__toast {
+  border: 1px solid rgb(70,70,70);
+}

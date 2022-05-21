@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "axios"
 import { Link, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { ToastContainer, toast } from "react-toastify";
 
 function Login() {
   const [cookies] = useCookies([]);
@@ -10,23 +9,23 @@ function Login() {
   useEffect(() => { if (cookies.jwt) { navigate("/") } }, [cookies, navigate]);
 
   const [values, setValues] = useState({ username: "", password: "" });
-  const generateError = (error) =>
-    toast.error(error, {
-      position: "bottom-right",
-    });
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      axios.defaults.baseURL = 'http://localhost:3001';
       const { data } = await axios.post(
         "/auth/login", 
         { ...values }, 
-        { withCredentials: true }
+        { 
+          withCredentials: true,
+          headers: {
+            'Authorization': `Basic token` 
+          }
+         }
       );
       if (data) {
         if (data.errors) {
-          const { username, password } = data.errors;
-          if (username) generateError(username);
-          else if (password) generateError(password);
+          console.log(data.errors);
         } else {
           navigate("/");
         }
@@ -35,6 +34,7 @@ function Login() {
       console.log(ex);
     }
   };
+
   return (
     <div className="flex items-center min-h-screen p-4 bg-neutral-900 justify-center w-full">
       <div

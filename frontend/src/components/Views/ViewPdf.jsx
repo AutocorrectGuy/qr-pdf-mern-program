@@ -33,11 +33,11 @@ export default function ViewPdf() {
   const navigate = useNavigate();
   useEffect(() => { if (cookies.jwt === undefined) { navigate("/login") }}, [cookies, navigate]);
 
+  const firstUpdate = useRef(true);
   const params = useParams();
   const [data, setData] = useState([]);
   const [qrCode, setQRCode] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const firstUpdate = useRef(true);
   const fullHref = useRef(`${window.location.host}/api/pdfs/file/${params.id}`);
   // editing data
   const [editiongMode, setEditingMode] = useState(false);

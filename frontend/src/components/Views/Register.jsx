@@ -20,6 +20,7 @@ function Register() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      // axios.defaults.baseURL = 'http://localhost:3001';
       const { data } = await axios.post(
         "/auth/register",
         {

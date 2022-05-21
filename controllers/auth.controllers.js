@@ -42,9 +42,7 @@ module.exports.register = async (req, res, next) => {
     const token = createToken(user._id);
 
     res.cookie("jwt", token, {
-      withCredentials: true,
-      httpOnly: false,
-      maxAge: maxAge * 1000,
+      withCredentials: true, httpOnly: true, secure: true, maxAge: maxAge * 1000,
     });
 
     res.status(201).json({ user: user._id, created: true });
@@ -60,11 +58,19 @@ module.exports.login = async (req, res) => {
   try {
     const user = await User.login(username, password);
     const token = createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
+    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+    res.cookie("hello", {}, { httpOnly: false, maxAge: maxAge * 1000 });
     res.status(200).json({ user: user._id, status: true });
   } catch (err) {
     const errors = handleErrors(err);
     res.json({ errors, status: false });
   }
 };
+
+module.exports.logout_get = (req, res) => {
+  res.cookie("jwt", "", { maxAge: 1})
+  res.clearCookie("jwt");
+  res.end();
+}
+
 // logout throught react-cookie hook "useCookies". 

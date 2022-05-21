@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGripHorizontal, faHomeAlt, faFileMedical, faSearch, 
   faFile, faFilePdf, faFileUpload, faDoorOpen }  from "@fortawesome/free-solid-svg-icons"
 import useWindowSize from "../../hooks/useWindowSize";
-import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
 const hoverText = "hover:text-white transition-width ease-out focus:text-white duration-300 delay-100";
@@ -13,6 +13,7 @@ const faIconStyles = "min-w-[24px] min-h-[24px] focus:text-white";
 const liItemTextStyles = "focus:text-white text-[1.05rem] font-semibold font-metrophobic whitespace-nowrap truncate text-clip";
 
 export default function Navbar() {
+  const firstUpdate = useRef(true);
   const navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies([]);
   const [isOpen, setOpen] = useState(true);
@@ -20,6 +21,7 @@ export default function Navbar() {
 
   useEffect(()=> { setOpen(window.innerWidth < 1100 ? false : true); }, [])
   useEffect(() => {
+    if (firstUpdate.current) { firstUpdate.current = false; return }
     if(size.width < 1024 && isOpen) setOpen(false);
     else if (size.width >= 1024 && !isOpen) toggleKebab();
   }, [size])
@@ -27,8 +29,11 @@ export default function Navbar() {
   function toggleKebab() { setOpen(!isOpen) };
   function closeKebabIfSmallScreen() {if(size.width < 640) setOpen(false)};
   const logOut = () => {
-    removeCookie("jwt");
-    navigate("/login");
+    axios.defaults.baseURL = 'http://localhost:3001';
+    axios.get("/auth/logout")
+      .then(res => {
+        navigate("/login");
+      })
   };
 
   function ButtonsTopMenu() {

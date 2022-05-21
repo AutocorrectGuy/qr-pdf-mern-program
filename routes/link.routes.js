@@ -3,6 +3,8 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Catalogue = require("../models/catalogue.model");
 const { checkUser } = require("../middleware/auth.middleware");
+const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 const mongoURI = process.env.ATLAS_URI;
 const conn = mongoose.createConnection(mongoURI, {
@@ -57,8 +59,31 @@ router.delete("/delete/:id", (req, res) => {
  * merges from "link.routes and pdf.routes"
  */
  router.get("/get-links-and-pdfs-ids", (req, res) => {
-  let linksData = [], pdfFilesData = [];
+  let token = req.cookies.jwt;
+  // console.log("cookie token: ", token);
+  // const authHeader = req.headers['authorization']
+  // const token2 = authHeader && authHeader.split(' ')[1];
+  // console.log(token2);
+  console.log(req.headers);
 
+  if (token) {
+    jwt.verify( token, process.env.ACCESS_TOKEN_SECRET,
+      async (err, decodedToken) => {
+        if (err) token = {};
+        else {
+          const user = await User.findById(decodedToken.id);
+          if (user) token = { status: true, username: user.username };
+          else token = { status: false, username: null };
+        }
+      }
+    );
+  } else {
+    token = {status: false, username: null};
+  }
+  // if(token.status === false) res.status(401).json({});
+  // if(token.username === null) res.status(401).json({});
+  
+  let linksData = [], pdfFilesData = [];
   Catalogue.find()
     .then(catalogues => {linksData = catalogues})
     .then(() => {
@@ -71,6 +96,7 @@ router.delete("/delete/:id", (req, res) => {
             colors: pdfFile.metadata.colors
           }));
         let outData = JSON.stringify({
+          token: token,
           part1: linksData,
           part2: pdfFilesData
         });
