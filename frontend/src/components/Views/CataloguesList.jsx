@@ -30,16 +30,13 @@ export default function CatalogueList() {
       .then(res => {
         // convert convert json object to javascript object
         let dataObj = JSON.parse(res.data);
-
-        // Lock 1: recieved empty OBJECT from DATABASE
-        if(res.data.length === 0) navigate("/login");
+        // Lock 1: kick out user, who has no http-only token
+        if(Object.keys(dataObj.token).length === 0 || dataObj.token === undefined)
+          navigate("/login");
         // Lock 2: token did not pass verification test
         if(!devMode.current)
-          if(dataObj.token === {} || dataObj.token === undefined) navigate("/login")
+          if(dataObj?.token === {} || dataObj?.token === undefined) navigate("/login")
         
-        // result
-        console.log("data");
-        console.log(res.data);
         setUserData(devMode.current ? cookies.jwtdev : dataObj?.token);
         setDataPart1(dataObj?.part1)
         setDataPart2(dataObj?.part2);
@@ -52,8 +49,6 @@ export default function CatalogueList() {
            navigate("/login");
         });
   }, []);
-  
-
 
   useEffect(() => {
     console.log("Devmode: ",devMode.current);
@@ -64,7 +59,6 @@ export default function CatalogueList() {
         : toast(`Welocme, ${userData.username}`, toastPropsRegular)
       removeCookie("hello");
     }
-    
   }, [userData])
 
   // generate qr-images for LINKS
@@ -157,26 +151,28 @@ export default function CatalogueList() {
   }
 
   return(
-    <>
-    <NavLeft />
-    <div className="relative flex justify-center w-full min-h-screen">
-      <div className="absolute -z-10 flex justify-center max-w-screen w-full bg-gradient-to-b from-neutral-700 to-neutral-800 brightness-50 h-[400px]"></div>
-      <div className="absolute -z-20 flex justify-center max-w-screen w-full bg-neutral-800 brightness-50 max-h-max h-full"></div>
-      <div className="flex flex-col">
-        <div> 
-          {
-          userData ? <div className="text-white">{userData.username}</div>
-          :<div className="text-red-400">User data not recieved!</div>
-          }
+    <> { Object.keys(userData).length !== 0 && 
+      <>
+        <NavLeft />
+        <div className="relative flex justify-center w-full min-h-screen">
+          <div className="absolute -z-10 flex justify-center max-w-screen w-full bg-gradient-to-b from-neutral-700 to-neutral-800 brightness-50 h-[400px]"></div>
+          <div className="absolute -z-20 flex justify-center max-w-screen w-full bg-neutral-800 brightness-50 max-h-max h-full"></div>
+          <div className="flex flex-col">
+            <div> 
+              {
+              userData ? <div className="text-white">{userData.username}</div>
+              :<div className="text-red-400">User data not recieved!</div>
+              }
+            </div>
+            <PdfsList />
+            <LinksList />
+          </div>
         </div>
-        <PdfsList />
-        <LinksList />
-      </div>
-    </div>
-    <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}
-      newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover
-    />
-    <NavRight />
-    </>
+        <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}
+          newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover
+        />
+        <NavRight />
+      </>
+    } </>
   )
 }
