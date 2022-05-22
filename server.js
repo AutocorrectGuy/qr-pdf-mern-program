@@ -20,8 +20,7 @@ const corsConfig = {
     if (whitelist.indexOf(origin) !== -1 || !origin) callback(null, true)
      else callback(new Error('Not allowed by CORS. This is the error'))
   },
-  credentials: true,
-  exposedHeaders: "Authorization"
+  credentials: true
 }
 
 app.use(express.json());
@@ -31,8 +30,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors(corsConfig));
 app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', "*");
-  res.header('Access-Control-Expose-Headers','Authorization');
+  res.header('Access-Control-Allow-Origin', process.env.TEST === undefined
+  ? "http://localhost:3000"
+  : "https://qrkodi.herokuapp.com/");
   res.header('Access-Control-Allow-Credentials', true);
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');

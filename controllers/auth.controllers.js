@@ -62,9 +62,9 @@ module.exports.login_POST = async (req, res) => {
     const token = createToken(user._id);
 
     res.cookie("hello", {}, { httpOnly: false, maxAge: maxAge * 1000 });
-    process.env.TEST !== undefined 
-      ? res.cookie("jwtdev", token, { httpOnly: false, maxAge: maxAge * 1000 })
-      : res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+    process.env.TEST === undefined 
+      ? res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 })
+      : res.cookie("jwtdev", token, { httpOnly: false, maxAge: maxAge * 1000 });
     
       res.status(200).json({ user: user._id, status: true });
   } catch (err) {
