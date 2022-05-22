@@ -12,9 +12,17 @@ import NavLeft from "../navbar/NavLeft"
 import NavRight from "../navbar/NavRight"
 
 const UploadPdf = () => {
-  const [cookies] = useCookies([]);
+  const firstUpdate = useRef(true);
   const navigate = useNavigate();
-  useEffect(() => { if (cookies.jwt === undefined) { navigate("/login") }}, [cookies, navigate]);
+  // const devMode = useRef(false);
+
+  useEffect(() => {
+    axios.get("/auth/verify")
+      .then(res => { 
+        console.log(res.data);
+        if(res.data.status) navigate("/")
+      });
+  }, [])
 
   const [file, setFile] = useState(null);
   const [inputContainsFile, setInputContainsFile] = useState(false);
