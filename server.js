@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsConfig));
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', process.env.TEST === undefined
-  ? "https://qrkodi.herokuapp.com/" 
+  ? "https://qrkodi.herokuapp.com" 
   : "http://localhost:3000");
   res.header('Access-Control-Allow-Credentials', true);
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
