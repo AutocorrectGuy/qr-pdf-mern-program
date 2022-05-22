@@ -9,13 +9,21 @@ function Login() {
   // useEffect(() => { if (cookies.jwt) { navigate("/") } }, [cookies, navigate]);
 
   const [values, setValues] = useState({ username: "", password: "" });
-  
+
+  useEffect(() => {
+    axios.get("/auth/verify")
+      .then(res => { 
+        console.log(res.data);
+        if(res.data.status) navigate("/")
+      });
+  }, [])
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      if(cookies.jwtdev === undefined) {
-        axios.defaults.baseURL = "http://localhost:3001"
-      }
+      // if(cookies.jwtdev === undefined) {
+      //   axios.defaults.baseURL = "http://localhost:3001"
+      // }
       const { data } = await axios.post(
         "/auth/login", 
         { ...values }, 
@@ -31,15 +39,6 @@ function Login() {
       navigate("/login");
     }
   };
-
-  useEffect(() => {
-    axios.get("/auth/verify")
-      .then(res => { 
-        console.log(res.data);
-        if(res.data.status) navigate("/")
-      });
-  }, [])
-
 
 
   return (

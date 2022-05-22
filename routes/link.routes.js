@@ -60,7 +60,7 @@ router.delete("/delete/:id", (req, res) => {
  */
  router.get("/get-links-and-pdfs-ids", async (req, res) => {
   const userData = await getUserData(req.cookies.jwt);
-  // if(Object.keys(userData).length === 0) return res.status(401).json({});
+  if(Object.keys(userData).length === 0) return res.status(401).json({});
   console.log(userData); 
 
   const linksData = await Catalogue.find();
