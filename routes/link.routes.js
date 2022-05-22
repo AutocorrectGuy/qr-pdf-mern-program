@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
 const Catalogue = require("../models/catalogue.model");
-const { checkUser } = require("../middleware/auth.middleware");
+const { getUserData } = require("../middleware/auth.middleware");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
@@ -58,52 +58,22 @@ router.delete("/delete/:id", (req, res) => {
 /**
  * merges from "link.routes and pdf.routes"
  */
- router.get("/get-links-and-pdfs-ids", (req, res) => {
-  let token = req.cookies.jwt;
-  // console.log("cookie token: ", token);
-  // const authHeader = req.headers['authorization']
-  // const token2 = authHeader && authHeader.split(' ')[1];
-  // console.log(token2);
-  console.log(req.headers);
+ router.get("/get-links-and-pdfs-ids", async (req, res) => {
+  const userData = await getUserData(req.cookies.jwt);
+  if(Object.keys(userData).length === 0) return res.status(401).json({}); 
 
-  if (token) {
-    jwt.verify( token, process.env.ACCESS_TOKEN_SECRET,
-      async (err, decodedToken) => {
-        if (err) token = {};
-        else {
-          const user = await User.findById(decodedToken.id);
-          if (user) token = { status: true, username: user.username };
-          else token = { status: false, username: null };
-        }
-      }
-    );
-  } else {
-    token = {status: false, username: null};
-  }
-  // if(token.status === false) res.status(401).json({});
-  // if(token.username === null) res.status(401).json({});
+  const linksData = await Catalogue.find();
+  const filesInfo = await gfs.find().toArray();
+  const mappedFilesData = (!filesInfo || filesInfo.length === 0) 
+    ? [] 
+    : filesInfo.map(({_id, metadata: {name, author, colors}}) => ({
+      _id, name, author, colors
+    }));
   
-  let linksData = [], pdfFilesData = [];
-  Catalogue.find()
-    .then(catalogues => {linksData = catalogues})
-    .then(() => {
-      gfs.find().toArray((err, files) => {
-        if (!files || files.length === 0) pdfIds = []
-        else pdfFilesData = files.map((pdfFile) => ({
-            _id: pdfFile._id,
-            name: pdfFile.metadata.name,
-            author: pdfFile.metadata.author,
-            colors: pdfFile.metadata.colors
-          }));
-        let outData = JSON.stringify({
-          token: token,
-          part1: linksData,
-          part2: pdfFilesData
-        });
-        return res.status(200).json(outData)
-      })
-    })
-    .catch(err => res.status(400).json(`Error +_+: ${err}`))
+  const output = JSON.stringify({ 
+    token: userData, part1: linksData, part2: mappedFilesData
+  });
+  return res.status(200).json(output);
 })
 
 router.get("/asd", (req, res) => {

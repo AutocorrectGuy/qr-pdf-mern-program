@@ -8,39 +8,44 @@ import NavRight from "../navbar/NavRight"
 import { ToastContainer, toast } from "react-toastify";
 import { toastPropsRegular, tostConPropsRegular} from "../utils/ToastProps"
 import { useCookies } from "react-cookie";
+import { devModeCheck } from "../../demodeCheck";
 
 export default function CatalogueList() {
 
-  const navigate = useNavigate();
   const firstUpdate = useRef(true);
+  const navigate = useNavigate();
+  const devMode = useRef(false);
+  const [cookies, setCookie, removeCookie] = useCookies([]);
   const [dataPart1, setDataPart1] = useState([]);
   const [dataPart2, setDataPart2] = useState([]);
   const [qrCodes1, setQRCoes1] = useState([]);
   const [qrCodes2, setQRCoes2] = useState([]);
   const [dataWithQR1, setDataWithQR1] = useState(null);
   const [dataWithQR2, setDataWithQR2] = useState(null);
-  const [cookies, setCookie, removeCookie] = useCookies([]);
   const [userData, setUserData] = useState([]);
 
   useEffect(() => { 
-    axios.defaults.baseURL = 'http://localhost:3001';
-    axios.get("/api/links/get-links-and-pdfs-ids", {
-      headers: {
-        'Authorization': `Basic token` 
-      }
-    })
+    devModeCheck(devMode, cookies, navigate);
+    axios.get("/api/links/get-links-and-pdfs-ids")
       .then(res => {
         // convert convert json object to javascript object
         let dataObj = JSON.parse(res.data);
-        // Lock 1: recieved empty object from database
+
+        // Lock 1: recieved empty OBJECT from DATABASE
         if(res.data.length === 0) navigate("/login");
-        // Lock 2: recieved 
-        if(dataObj.token === {} || dataObj.token === undefined) navigate("/login")
-        setUserData(dataObj?.token);
+        // Lock 2: token did not pass verification test
+        if(!devMode.current)
+          if(dataObj.token === {} || dataObj.token === undefined) navigate("/login")
+        
+        // result
+        console.log("data");
+        console.log(res.data);
+        setUserData(devMode.current ? cookies.jwtdev : dataObj?.token);
         setDataPart1(dataObj?.part1)
         setDataPart2(dataObj?.part2);
       })
       .catch(function (error) {
+        if(devMode.current) return;
         if(error.response.status === 401 || 
           error.response.status === 403 || 
           error.response.status === 404) 
@@ -51,9 +56,12 @@ export default function CatalogueList() {
 
 
   useEffect(() => {
+    console.log("Devmode: ",devMode.current);
     if (firstUpdate.current) { firstUpdate.current = false; return }
     if (cookies.hello !== undefined) {
-      toast(`Welocme. ${userData.username}`, toastPropsRegular);
+      devMode.current 
+        ? toast(`Sveiks, makaka`, toastPropsRegular)
+        : toast(`Welocme, ${userData.username}`, toastPropsRegular)
       removeCookie("hello");
     }
     
@@ -132,7 +140,7 @@ export default function CatalogueList() {
     return(
       <div>
         <div className="p-10">
-            <div className="text-white text-3xl font-bold my-8 cursor-default">Ārējo adrešu un katalogu saraksts</div>
+            <div className="text-white text-3xl font-bold my-8 cursor-default">{process.env.REACT_APP_TEST}</div>
             <div className="flex flex-col items-center sm:items-stretch sm:grid justify-center gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
               {(dataWithQR1 !== null) && dataWithQR1.map((item, index) => 
                 <Card key={`card-links-${index}`} 

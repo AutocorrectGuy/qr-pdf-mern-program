@@ -6,34 +6,41 @@ import { useCookies } from "react-cookie";
 function Login() {
   const [cookies] = useCookies([]);
   const navigate = useNavigate();
-  useEffect(() => { if (cookies.jwt) { navigate("/") } }, [cookies, navigate]);
+  // useEffect(() => { if (cookies.jwt) { navigate("/") } }, [cookies, navigate]);
 
   const [values, setValues] = useState({ username: "", password: "" });
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      axios.defaults.baseURL = 'http://localhost:3001';
+      if(cookies.jwtdev === undefined) {
+        axios.defaults.baseURL = "http://localhost:3001"
+      }
       const { data } = await axios.post(
         "/auth/login", 
         { ...values }, 
-        { 
-          withCredentials: true,
-          headers: {
-            'Authorization': `Basic token` 
-          }
-         }
+        { withCredentials: true }
       );
       if (data) {
-        if (data.errors) {
-          console.log(data.errors);
-        } else {
-          navigate("/");
-        }
+        if (data.errors) console.log(data.errors);
+         else navigate("/");
+        
       }
     } catch (ex) {
       console.log(ex);
+      navigate("/login");
     }
   };
+
+  useEffect(() => {
+    axios.get("/auth/verify")
+      .then(res => { 
+        console.log(res.data);
+        if(res.data.status) navigate("/")
+      });
+  }, [])
+
+
 
   return (
     <div className="flex items-center min-h-screen p-4 bg-neutral-900 justify-center w-full">

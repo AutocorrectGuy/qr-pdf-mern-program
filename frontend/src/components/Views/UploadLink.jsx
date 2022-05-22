@@ -5,23 +5,29 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import NavLeft from "../navbar/NavLeft"
 import NavRight from "../navbar/NavRight"
+import { devModeCheck } from "../../demodeCheck";
 
 
 export default function UploadLink() {
-  const [cookies] = useCookies([]);
+
+  // const firstUpdate = useRef(true);
   const navigate = useNavigate();
-  useEffect(() => { if (cookies.jwt === undefined) { navigate("/login") }}, [cookies, navigate]);
+  const devMode = useRef(false);
+  const [cookies] = useCookies([]);
 
   let [data, setData] = useState();
   let outputColors = useRef(["#000000", "#FFFFFF"]);
   let inputName = useRef(null);
   let inputLink = useRef(null);
 
+  useEffect(() => {
+    devModeCheck(devMode, cookies, navigate);
+  }, [])
+
   /**
    * on key change save input value to react state variable
    */
   function onChangeCallback(e, inputTarget) {
-    console.log(e.target.value);
     inputTarget.current = e.target.value;
   }
 
@@ -29,7 +35,7 @@ export default function UploadLink() {
    * !U#Y!@#&!---- SUMBIT POST DATA TO THE DATABASE ----!#&##Y!&@#!
    */
   function onSubmit(e) {
-    e.preventDefault();  
+    e.preventDefault();
     axios.post("/api/links/upload", {
       name: inputName.current, 
       link: inputLink.current,
@@ -37,7 +43,7 @@ export default function UploadLink() {
       color2: outputColors.current[1],
       username: "Developer"
     })
-      .then(res => { window.location = '/' })
+      .then(res => { navigate("/") })
       .catch(err => console.log(`Error ${err}`));
   }
 

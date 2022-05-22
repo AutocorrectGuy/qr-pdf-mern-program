@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const { getUserData } = require("../middleware/auth.middleware");
+
 require("dotenv").config();
 
 const maxAge = 3 * 24 * 60 * 60;
@@ -35,7 +37,7 @@ const handleErrors = (err) => {
   return errors;
 };
 
-module.exports.register = async (req, res, next) => {
+module.exports.register_POST = async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const user = await User.create({ username, password });
@@ -53,24 +55,32 @@ module.exports.register = async (req, res, next) => {
   }
 };
 
-module.exports.login = async (req, res) => {
+module.exports.login_POST = async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await User.login(username, password);
     const token = createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+
     res.cookie("hello", {}, { httpOnly: false, maxAge: maxAge * 1000 });
-    res.status(200).json({ user: user._id, status: true });
+    process.env.TEST !== undefined 
+      ? res.cookie("jwtdev", token, { httpOnly: false, maxAge: maxAge * 1000 })
+      : res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+    
+      res.status(200).json({ user: user._id, status: true });
   } catch (err) {
     const errors = handleErrors(err);
     res.json({ errors, status: false });
   }
 };
 
-module.exports.logout_get = (req, res) => {
+module.exports.logout_GET = (req, res) => {
   res.cookie("jwt", "", { maxAge: 1})
   res.clearCookie("jwt");
   res.end();
 }
 
-// logout throught react-cookie hook "useCookies". 
+module.exports.verify_GET = async (req, res) => {
+  const userData = await getUserData(req.cookies.jwt);
+  console.log(userData);
+  res.json(userData); 
+}

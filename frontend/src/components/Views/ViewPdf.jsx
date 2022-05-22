@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import NavLeft from "../navbar/NavLeft"
 import NavRight from "../navbar/NavRight"
+import { devModeCheck } from "../../demodeCheck";
 
 const dataKeys = {
   name: "Nosaukums", 
@@ -29,11 +30,12 @@ const textRightClass  = "text-neutral-100 py-2";
 const inputClass      = "flex px-2 sm:my-[2px] py-2 sm:py-0 min-w-[1px] max-w-[300px] w-full bg-neutral-800 focus:bg-neutral-700 rounded-sm focus:outline-none text-white";
 
 export default function ViewPdf() {
-  const [cookies] = useCookies([]);
-  const navigate = useNavigate();
-  useEffect(() => { if (cookies.jwt === undefined) { navigate("/login") }}, [cookies, navigate]);
 
   const firstUpdate = useRef(true);
+  const navigate = useNavigate();
+  const devMode = useRef(false);
+  const [cookies] = useCookies([]);
+
   const params = useParams();
   const [data, setData] = useState([]);
   const [qrCode, setQRCode] = useState([]);
@@ -45,8 +47,10 @@ export default function ViewPdf() {
   const [author, setAuthor] = useState(null);
   const [color1, setColor1] = useState(null);
   const [color2, setColor2] = useState(null);
+  
 
   useEffect(() => {
+    devModeCheck(devMode, cookies, navigate);
     function getAxiosData() {
       axios.get(`/api/pdfs/json/${params.id}`)
         .then((res) => { setData(res.data) })

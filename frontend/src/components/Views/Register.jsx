@@ -12,6 +12,13 @@ function Register() {
     }
   }, [cookies, navigate]);
 
+  useEffect(() => {
+    axios.get("/auth/verify")
+      .then(res => { 
+        if(res.data.status) navigate("/")
+      });
+  }, [])
+
   const [values, setValues] = useState({ username: "", password: "" });
   const generateError = (error) =>
     toast.error(error, {
@@ -20,7 +27,6 @@ function Register() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      // axios.defaults.baseURL = 'http://localhost:3001';
       const { data } = await axios.post(
         "/auth/register",
         {
