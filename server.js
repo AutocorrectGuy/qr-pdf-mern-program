@@ -10,7 +10,6 @@ const linkRouter = require("./routes/link.routes");
 const pdfRouter = require("./routes/pdf.routes");
 const authRouter = require("./routes/authorization.routes");
 
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -34,7 +33,6 @@ app.use(function(req, res, next) {
   ? "https://qrkodi.herokuapp.com" 
   : "http://localhost:3000");
   res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
