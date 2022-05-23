@@ -5,6 +5,7 @@ require("dotenv").config();
 // Express check. Returns status if not authirized.
 module.exports.checkUser = (req, res, next) => {
   const token = req.cookies.jwt;
+  console.log("!!!")
   if (token) {
     jwt.verify(
       token,
@@ -24,6 +25,24 @@ module.exports.checkUser = (req, res, next) => {
   } else {
     res.json({ status: false });
     next();
+  }
+};
+module.exports.checkTokenLight = async (token) => {
+  if (token) {
+    const decodedJWT = jwt.verify(
+      token, 
+      process.env.ACCESS_TOKEN_SECRET,
+      (err, decodedToken) => err ? undefined : decodedToken
+    );
+    const userFound = await User.findById(decodedJWT.id)
+      .then((user) => (!user || user === undefined) ? false : {
+        user: user._id, 
+        username: user.username,
+        status: true
+      });
+    return userFound ? userFound : false;
+  } else {
+    return false;
   }
 };
 module.exports.getUserData = async function(token) {

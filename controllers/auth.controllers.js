@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const { getUserData } = require("../middleware/auth.middleware");
+const { getUserData, checkTokenLight } = require("../middleware/auth.middleware");
 
 require("dotenv").config();
 
@@ -38,18 +38,18 @@ const handleErrors = (err) => {
 };
 
 module.exports.register_POST = async (req, res, next) => {
+  const { username, password } = req.body;
   try {
-    const { username, password } = req.body;
     const user = await User.create({ username, password });
     const token = createToken(user._id);
 
-    res.cookie("jwt", token, {
-      withCredentials: true, httpOnly: true, secure: true, maxAge: maxAge * 1000,
-    });
+    res.cookie("hello", {}, { httpOnly: false, maxAge: maxAge * 1000 });
+    process.env.TEST === undefined 
+      ? res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 })
+      : res.cookie("jwtdev", token, { httpOnly: false, maxAge: maxAge * 1000 });
 
     res.status(201).json({ user: user._id, created: true });
   } catch (err) {
-    console.log(err);
     const errors = handleErrors(err);
     res.json({ errors, created: false });
   }
@@ -66,7 +66,11 @@ module.exports.login_POST = async (req, res) => {
       ? res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 })
       : res.cookie("jwtdev", token, { httpOnly: false, maxAge: maxAge * 1000 });
     
-      res.status(200).json({ user: user._id, status: true });
+      res.status(200).json({ 
+        user: user._id, 
+        username: user.username,
+        status: true 
+      });
   } catch (err) {
     const errors = handleErrors(err);
     res.json({ errors, status: false });
@@ -81,6 +85,14 @@ module.exports.logout_GET = (req, res) => {
 
 module.exports.verify_GET = async (req, res) => {
   const userData = await getUserData(req.cookies.jwt);
-  console.log(userData);
   res.json(userData); 
+}
+module.exports.GET_TOKEN = async (req, res) => {
+  const token = await checkTokenLight(req.cookies.jwt);
+  // console.log(token ? "valid" : "invalid");
+  // console.log(token);
+  if(!token) {
+    return res.status(401).json({"info": "invalid token"});
+  }
+  else res.status(200).json(token);
 }

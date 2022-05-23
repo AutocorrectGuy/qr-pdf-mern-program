@@ -5,6 +5,7 @@ const multer = require('multer');
 const crypto = require('crypto');
 const path = require('path');
 const PdfModel = require("../models/pdf.model");
+const { checkUser, checkTokenLight } = require("../middleware/auth.middleware")
 require('dotenv').config();
 
 const mongoURI = process.env.ATLAS_URI;
@@ -97,12 +98,12 @@ router.get('/file/:id', ({ params: { id } }, res) => {
   });
 });
 
-router.get('/json/:id', ({ params: { id } }, res) => {
-  PdfModel.findById(id)
+router.get('/json/:id', (req, res) => {
+
+  PdfModel.findById(req.params.id)
     .then(data => res.json(data))
     .catch(err =>`There is no such file in database. ${err}`);
 });
-
 
 router.put('/update/:id', (req, res) => {
   PdfModel.findByIdAndUpdate(req.params.id, {

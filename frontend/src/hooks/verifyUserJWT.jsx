@@ -3,8 +3,6 @@ import { useCookies } from "react-cookie";
 
 
 export default async function verifyUserJWT({cookies, navigate, removeCookie}) {
-  console.log(cookies.jwt);
-  
   if (!cookies.jwt) {
     navigate("/login");
   } else {

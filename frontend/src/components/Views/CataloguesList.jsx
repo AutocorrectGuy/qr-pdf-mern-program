@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import QRCode from "qrcode";
 import Card from "../utils/Card"
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,11 @@ import { ToastContainer, toast } from "react-toastify";
 import { toastPropsRegular, tostConPropsRegular} from "../utils/ToastProps"
 import { useCookies } from "react-cookie";
 import { devModeCheck } from "../../demodeCheck";
+import LoadingScreen from "../utils/LoadingScreen";
+import UserContext from "../../context/UserContext";
+import NavTop from "../navbar/NavTop";
+
+const liClassList = "justify-center flex flex-col items-center px-5 sm:px-0 sm:grid sm:items-stretch gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6";
 
 export default function CatalogueList() {
 
@@ -22,44 +27,48 @@ export default function CatalogueList() {
   const [qrCodes2, setQRCoes2] = useState([]);
   const [dataWithQR1, setDataWithQR1] = useState(null);
   const [dataWithQR2, setDataWithQR2] = useState(null);
-  const [userData, setUserData] = useState([]);
+
+  const { userContextData, setUserContextData } = useContext(UserContext);
 
   useEffect(() => { 
+
     devModeCheck(devMode, cookies, navigate);
+
+    // TODO: transform to one request
+    if(userContextData.username === undefined && cookies.hello === undefined) {
+      console.log("reset token")
+      axios.get("/auth/token")
+        .then(res => {
+          setUserContextData(res.data);
+        })
+        .catch(({response: { status }}) => {
+          if(status === 401 || status === 404) navigate("/login")
+        })
+    }
+    
     axios.get("/api/links/get-links-and-pdfs-ids")
       .then(res => {
         // convert convert json object to javascript object
         let dataObj = JSON.parse(res.data);
-        // Lock 1: kick out user, who has no http-only token
-        if(Object.keys(dataObj.token).length === 0 || dataObj.token === undefined)
-          navigate("/login");
-        // Lock 2: token did not pass verification test
-        if(!devMode.current)
-          if(dataObj?.token === {} || dataObj?.token === undefined) navigate("/login")
-        
-        setUserData(devMode.current ? cookies.jwtdev : dataObj?.token);
+        // get token data. Don't render anything, if data is not valid
+        if(cookies.hello !== undefined) {
+          greetUser();
+        } 
         setDataPart1(dataObj?.part1)
         setDataPart2(dataObj?.part2);
       })
-      .catch(function (error) {
+      .catch(function ({response: { status }}) {
         if(devMode.current) return;
-        if(error.response.status === 401 || 
-          error.response.status === 403 || 
-          error.response.status === 404) 
-           navigate("/login");
-        });
+        if(status === 401 || status === 404) navigate("/login");
+      });
   }, []);
 
-  useEffect(() => {
-    console.log("Devmode: ",devMode.current);
-    if (firstUpdate.current) { firstUpdate.current = false; return }
-    if (cookies.hello !== undefined) {
-      devMode.current 
-        ? toast(`Sveiks, makaka`, toastPropsRegular)
-        : toast(`Welocme, ${userData.username}`, toastPropsRegular)
-      removeCookie("hello");
-    }
-  }, [userData])
+  function greetUser() {
+    devMode.current 
+      ? toast(`Sveiks, kā tu tiki iekšā bez atļaujas??`, toastPropsRegular)
+      : toast(`Prieks tevi redzēt, ${userContextData.username}`, toastPropsRegular)
+    removeCookie("hello");
+  }
 
   // generate qr-images for LINKS
   useEffect(() => {
@@ -116,7 +125,7 @@ export default function CatalogueList() {
       <div>
         <div className="p-10">
           <div className="text-white text-3xl font-bold my-8 cursor-default">Katalogu saraksts</div>
-          <div className="flex flex-col items-center sm:items-stretch sm:grid justify-center gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
+          <div className={liClassList}>
             {(dataWithQR2 !== null) && dataWithQR2.map((pdfFile, index) => 
               <Card key={`card-pdfs-${index}`}  
                 outsideHref={`${window.location.href}api/pdfs/file/${pdfFile._id}`} 
@@ -134,8 +143,8 @@ export default function CatalogueList() {
     return(
       <div>
         <div className="p-10">
-            <div className="text-white text-3xl font-bold my-8 cursor-default">{process.env.REACT_APP_TEST}</div>
-            <div className="flex flex-col items-center sm:items-stretch sm:grid justify-center gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
+            <div className="text-white text-3xl font-bold my-8 cursor-default">Linku saraksts</div>
+            <div className={liClassList}>
               {(dataWithQR1 !== null) && dataWithQR1.map((item, index) => 
                 <Card key={`card-links-${index}`} 
                   outsideHref={item.link} 
@@ -151,19 +160,15 @@ export default function CatalogueList() {
   }
 
   return(
-    <> { Object.keys(userData).length !== 0 && 
+    <> { Object.keys(userContextData).length === 0 ? <LoadingScreen /> :
       <>
         <NavLeft />
         <div className="relative flex justify-center w-full min-h-screen">
-          <div className="absolute -z-10 flex justify-center max-w-screen w-full bg-gradient-to-b from-neutral-700 to-neutral-800 brightness-50 h-[400px]"></div>
+          <div className="absolute -z-10 flex justify-center max-w-screen w-full bg-gradient-to-b from-neutral-600 to-neutral-800 brightness-50 h-[400px]"></div>
           <div className="absolute -z-20 flex justify-center max-w-screen w-full bg-neutral-800 brightness-50 max-h-max h-full"></div>
-          <div className="flex flex-col">
-            <div> 
-              {
-              userData ? <div className="text-white">{userData.username}</div>
-              :<div className="text-red-400">User data not recieved!</div>
-              }
-            </div>
+          <div className="flex flex-col w-full">
+            {/* <div className="text-white mx-auto">{`Lietotājs: ${userContextData.username}`}</div> */}
+            <NavTop />
             <PdfsList />
             <LinksList />
           </div>

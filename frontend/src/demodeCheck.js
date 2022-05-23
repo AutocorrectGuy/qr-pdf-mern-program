@@ -9,7 +9,7 @@ import axios from "axios";
  */
 export function devModeCheck(devMode, cookies, navigate) {
   let isDevMode = process.env.REACT_APP_TEST !== undefined;
-  console.log(isDevMode ? "devmode" : "no devmode");
+  // console.log(isDevMode ? "devmode" : "no devmode");
   if(isDevMode) {
     if (cookies.jwtdev === undefined) navigate("/login");
     axios.defaults.baseURL = "http://localhost:3001"

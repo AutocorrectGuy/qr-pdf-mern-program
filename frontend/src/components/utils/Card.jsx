@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 export default function DataCard({name, author, qrCode, outsideHref, insideHref, index}) {
   return(
-    <div key={`link-db-${index}`} className="flex flex-col p-4 rounded-lg bg-neutral-800 hover:bg-neutral-700 max-w-[300px] sm:max-w-[224px] w-full">
+    <div key={`link-db-${index}`} className="flex mx-auto flex-col p-4 rounded-lg bg-neutral-800 hover:bg-neutral-700 max-w-[300px] sm:max-w-[224px] w-full">
       <img className="w-full rounded-lg mb-4" src={qrCode}/>
       <div className="flex flex-col h-full justify-between">
         <div className="flex justify-between">
