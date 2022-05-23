@@ -33,7 +33,7 @@ export default function CatalogueList() {
   useEffect(() => { 
 
     devModeCheck(devMode, cookies, navigate);
-
+    
     // TODO: transform to one request
     if(userContextData.username === undefined && cookies.hello === undefined) {
       console.log("reset token")
@@ -42,10 +42,15 @@ export default function CatalogueList() {
           setUserContextData(res.data);
         })
         .catch(({response: { status }}) => {
+          console.log("first gate")
           if(status === 401 || status === 404) navigate("/login")
         })
     }
     
+    if(userContextData.username === undefined && cookies.hello === undefined) {
+      navigate("/login");
+      return;
+    } 
     axios.get("/api/links/get-links-and-pdfs-ids")
       .then(res => {
         // convert convert json object to javascript object

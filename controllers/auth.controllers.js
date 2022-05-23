@@ -48,7 +48,11 @@ module.exports.register_POST = async (req, res, next) => {
       ? res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 })
       : res.cookie("jwtdev", token, { httpOnly: false, maxAge: maxAge * 1000 });
 
-    res.status(201).json({ user: user._id, created: true });
+    res.status(201).json({ 
+      user: user._id, 
+      username: user.username,
+      status: true 
+    });
   } catch (err) {
     const errors = handleErrors(err);
     res.json({ errors, created: false });

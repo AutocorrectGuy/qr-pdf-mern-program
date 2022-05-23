@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingScreen from "../utils/LoadingScreen";
+import UserContext from "../../context/UserContext";
 
 function Register() {
   const [cookies] = useCookies(["cookie-name"]);
   const navigate = useNavigate();
   const [loginStatus, setLoginStatus] = useState([]);
+
+  const { userContextData, setUserContextData } = useContext(UserContext);
 
   useEffect(() => {
     axios.get("/auth/verify")
@@ -37,6 +40,11 @@ function Register() {
           if (username) generateError(username);
           else if (password) generateError(password);
         } else {
+          setUserContextData({ 
+            user: data?.user,
+            username: data?.username,
+            status: data?.status
+          });
           navigate("/");
         }
       }
