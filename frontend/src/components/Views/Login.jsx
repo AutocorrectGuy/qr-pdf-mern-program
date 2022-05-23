@@ -15,11 +15,6 @@ function Login() {
 
   
   useEffect(() => {
-    if(userContextData.username !== undefined) {
-      navigate("/");
-      return;
-    }
-
     axios.get("/auth/verify")
       .then(res => { 
         res.data.status && navigate("/");

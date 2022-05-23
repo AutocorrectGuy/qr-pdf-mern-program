@@ -82,7 +82,7 @@ module.exports.login_POST = async (req, res) => {
 };
 
 module.exports.logout_GET = (req, res) => {
-  res.cookie("jwt", "", { maxAge: 1})
+  res.cookie("jwt", "", { maxAge: 1} );
   res.clearCookie("jwt");
   res.end();
 }

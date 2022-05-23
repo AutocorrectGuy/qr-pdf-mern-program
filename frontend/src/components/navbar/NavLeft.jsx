@@ -29,14 +29,9 @@ export default function Navbar() {
   function toggleKebab() { setOpen(!isOpen) };
   function closeKebabIfSmallScreen() {if(size.width < 640) setOpen(false)};
   const logOut = () => {
-    if(cookies.jwtdev === undefined) {
       axios.get("/auth/logout")
         .then(res => { navigate("/login") })
-    } else {
-      removeCookie("jwtdev");
-      navigate("/login");
     }
-  };
 
   function ButtonsTopMenu() {
     return (
