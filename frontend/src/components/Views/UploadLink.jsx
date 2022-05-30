@@ -9,6 +9,8 @@ import { devModeCheck } from "../../demodeCheck";
 import UserContext from "../../context/UserContext";
 import NavTop from "../navbar/NavTop";
 import LoadingScreen from "../utils/LoadingScreen";
+import { ToastContainer, toast } from "react-toastify";
+import { toastPropsRegular, tostConPropsRegular} from "../utils/ToastProps"
 
 
 export default function UploadLink() {
@@ -57,10 +59,16 @@ export default function UploadLink() {
       link: inputLink.current,
       color1: outputColors.current[0],
       color2: outputColors.current[1],
-      username: "Developer"
+      username: userContextData.username
     })
-      .then(res => { navigate("/") })
-      .catch(err => console.log(`Error ${err}`));
+      .then(res => { 
+        navigate("/") 
+        // toast(`Links sagalbāts sekmīgi!`, toastPropsRegular)
+      })
+      .catch(err => {
+        toast(`Radusies kļūda saglabājot linku!`, toastPropsRegular)
+        console.log(`Error ${err}`)
+      });
   }
 
   return(
@@ -105,6 +113,9 @@ export default function UploadLink() {
           </form>
         </div>
       </div>
+      <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}
+          newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover
+        />
       <NavRight />
       </>
     } </>

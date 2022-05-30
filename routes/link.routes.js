@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
-const Catalogue = require("../models/catalogue.model");
+const LinkModel = require("../models/catalogue.model");
+const PdfModel = require("../models/pdf.model");
 const { getUserData } = require("../middleware/auth.middleware");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
@@ -26,20 +27,20 @@ router.post("/upload", (req, res) => {
     color2: req.body.color2,
     author: req.body.username
   };
-  const newCatalogue = new Catalogue(catalogue);
+  const newCatalogue = new LinkModel(catalogue);
   newCatalogue.save()
     .then(() => res.json(`Catalogue "${catalogue.name}" added succesfully!`))
     .catch(err => res.status(400).json(`Error +_+: ${err}`))
 })
 
 router.get('/json/:id', (req, res) => {
-  Catalogue.findById(req.params.id)
+  LinkModel.findById(req.params.id)
     .then(data => res.json(data))
     .catch(err =>`There is no such file in database. ${err}`);
 });
 
 router.put('/update/:id', (req, res) => {
-  Catalogue.findByIdAndUpdate(req.params.id, {
+  LinkModel.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
     author: req.body.author,
     color1: req.body.color1,
@@ -50,7 +51,7 @@ router.put('/update/:id', (req, res) => {
 });
 
 router.delete("/delete/:id", (req, res) => {
-  Catalogue.findByIdAndDelete(req.params.id)
+  LinkModel.findByIdAndDelete(req.params.id)
     .then(data => res.json("Catalogue deleted succesfully"))
     .catch(err =>`Error +_+: ${err}`);
 })
@@ -59,11 +60,20 @@ router.delete("/delete/:id", (req, res) => {
  * merges from "link.routes and pdf.routes"
  */
  router.get("/get-links-and-pdfs-ids", async (req, res) => {
-  const userData = await getUserData(req.cookies.jwt);
-  if(Object.keys(userData).length === 0) return res.status(401).json({});
+  // const userData = await getUserData(req.cookies.jwt);
+  // if(Object.keys(userData).length === 0) return res.status(401).json({});
 
-  const linksData = await Catalogue.find();
-  const filesInfo = await gfs.find().toArray();
+  // console.log(JSON.stringify(req.query));
+
+  const countFiles = await PdfModel.countDocuments();
+  const countLinks = await LinkModel.countDocuments();
+  
+  const limit = parseInt(req.query.limit);
+  const skipOffest = parseInt(req.query.page) * limit;
+
+  const filesInfo = await PdfModel.find().limit(limit).skip(skipOffest);
+  const linksData = await LinkModel.find().limit(limit).skip(skipOffest);
+
   const mappedFilesData = (!filesInfo || filesInfo.length === 0) 
     ? [] 
     : filesInfo.map(({_id, metadata: {name, author, colors}}) => ({
@@ -71,13 +81,17 @@ router.delete("/delete/:id", (req, res) => {
     }));
   
   const output = JSON.stringify({ 
-    token: userData, part1: linksData, part2: mappedFilesData
+    // token: userData, 
+    linksData: {
+      count: countLinks,
+      data: linksData, 
+    },
+    filesData: {
+      count: countFiles,
+      data: mappedFilesData
+    },
   });
   return res.status(200).json(output);
-})
-
-router.get("/asd", (req, res) => {
-  res.status(200).json({"x":"1"});
 })
 
 module.exports = router; 
