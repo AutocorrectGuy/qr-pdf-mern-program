@@ -63,15 +63,13 @@ export default function PaginatedList ({
       ))
       cardTotalCount.current = data.linksData.count;
       pageCount.current = Math.ceil(cardTotalCount.current / cardsPerPage.current);
-        // if there are less than a half of cards in page, push empty cards to get optimal container height
-        if(data.linksData.data.length < 4) 
+      
+      // if there are less than a half of cards in page, push empty cards to get optimal container height
+      if(data.linksData.data.length < 4) 
         for (let i = 0; i < 3; i++) 
           data.linksData.data.push({});
       return data.linksData.data;
     }
-
-
-
   }
 
   return (
@@ -83,13 +81,20 @@ export default function PaginatedList ({
         <div className="justify-center flex flex-col items-center px-5 sm:px-0 sm:grid sm:items-stretch sm:grid-cols-3 gap-3">
           {!data
             ? [...Array(cardsPerPage.current)].map((x, i) =>
-              <SkeletonCard key={`skel-pdf-${i}`} />
-            ) : data.map((item, i) =>
-              <Card key={`card-pdf-${i}`}
-                outsideHref={`${window.location.href}api/pdfs/file/${item._id}`}
-                insideHref={`/pdfs/${item._id}`}
-                i={i} name={item.name} author={item.author} qrCode={item.qrCode}
-              />
+              <SkeletonCard key={`skel-${name}-${i}`} />
+            ) : data.map((item, i) => (
+              name === "Katalogu saraksts" 
+                ? <Card key={`card-${name}-${i}`}
+                    outsideHref={`${window.location.href}api/pdfs/file/${item._id}`}
+                    insideHref={`/pdfs/${item._id}`}
+                    i={i} name={item.name} author={item.author} qrCode={item.qrCode}
+                  />
+                : <Card key={`card-${name}-${i}`}
+                    outsideHref={item.link}
+                    insideHref={`/links/${item._id}`}
+                    i={i} name={item.name} author={item.author} qrCode={item.qrCode}
+                  />
+              )
             )
           }
         </div>

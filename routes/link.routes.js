@@ -60,10 +60,8 @@ router.delete("/delete/:id", (req, res) => {
  * merges from "link.routes and pdf.routes"
  */
  router.get("/get-links-and-pdfs-ids", async (req, res) => {
-  // const userData = await getUserData(req.cookies.jwt);
-  // if(Object.keys(userData).length === 0) return res.status(401).json({});
-
-  // console.log(JSON.stringify(req.query));
+  const userData = await getUserData(req.cookies.jwt);
+  if(Object.keys(userData).length === 0) return res.status(401).json({});
 
   const countFiles = await PdfModel.countDocuments();
   const countLinks = await LinkModel.countDocuments();
@@ -81,7 +79,7 @@ router.delete("/delete/:id", (req, res) => {
     }));
   
   const output = JSON.stringify({ 
-    // token: userData, 
+    token: userData, 
     linksData: {
       count: countLinks,
       data: linksData, 

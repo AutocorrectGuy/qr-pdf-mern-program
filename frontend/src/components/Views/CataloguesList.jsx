@@ -39,13 +39,11 @@ export default function CatalogueList() {
   useEffect(() => {
     devModeCheck(devMode, cookies, navigate);
     if(userContextData.username === undefined && cookies.hello === undefined) {
-      console.log("reset token")
       axios.get("/auth/token")
         .then(res => {
           setUserContextData(res.data);
         })
         .catch(({response: { status }}) => {
-          console.log("first gate")
           if(status === 401 || status === 404) navigate("/login")
         })
     }
