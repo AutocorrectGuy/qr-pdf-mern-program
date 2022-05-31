@@ -13,8 +13,8 @@ module.exports = {
         '2xl': '1536px',
         '3xl': '1600px',
         '4xl': '1850px'
-      },
-    },
+      }
+    }
   },
   plugins: [
     require('@tailwindcss/line-clamp'),

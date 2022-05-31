@@ -18,7 +18,7 @@ import PaginatedList from "../utils/PaginatedList";
 
 export default function CatalogueList() {
 
-  // axios.defaults.baseURL = "http://localhost:3001"
+  // axios.defaults.baseURL = "http://localhost:3001" 
 
   // useWindowSize();
   const firstUpdate = useRef(true);
@@ -64,6 +64,7 @@ export default function CatalogueList() {
         resString = await axios.get(
           `/api/links/get-links-and-pdfs-ids?page=0&limit=${cardsPerPage.current}`);
       } catch (err) {
+        console.log("bļe nu")
         console.log(err);        
       }
       let res = JSON.parse(resString.data);

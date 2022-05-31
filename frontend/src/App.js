@@ -13,6 +13,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import UserContext from "./context/UserContext";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import ViewModels from "./components/Views/ViewModels";
+import ViewModelsFolder from "./components/Views/ViewModelsFolder";
 
 function App() {
   const [userContextData, setUserContextData] = useState([]);
@@ -32,6 +34,8 @@ function App() {
                 <Route path="/upload-pdf" element={<UploadPdf />} />
                 <Route path="/pdfs/:id" element={<ViewPdf />} />
                 <Route path="/links/:id" element={<ViewLink />} />
+                <Route path="/models" element={<ViewModels />} />
+                <Route path="/models/:id" element={<ViewModelsFolder />} />
               </Routes>
             </UserContext.Provider>
         </Router>

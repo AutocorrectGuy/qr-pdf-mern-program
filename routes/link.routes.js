@@ -60,7 +60,11 @@ router.delete("/delete/:id", (req, res) => {
  * merges from "link.routes and pdf.routes"
  */
  router.get("/get-links-and-pdfs-ids", async (req, res) => {
-  const userData = await getUserData(req.cookies.jwt);
+  const userData = process.env.TEST === undefined
+    ? await getUserData(req.cookies.jwt)
+    : {}
+
+  console.log(userData);
   if(Object.keys(userData).length === 0) return res.status(401).json({});
 
   const countFiles = await PdfModel.countDocuments();
@@ -91,5 +95,23 @@ router.delete("/delete/:id", (req, res) => {
   });
   return res.status(200).json(output);
 })
+
+router.get("/get-models", async (req, res) => {
+  const filesInfo = await PdfModel.find();
+
+  const mappedFilesData = (!filesInfo || filesInfo.length === 0) 
+    ? [] 
+    : filesInfo.map(({_id, metadata: {name, author, colors}}) => ({
+      _id, name, author, colors
+    }));
+  
+  const output = JSON.stringify({ 
+    filesData: {
+      data: mappedFilesData
+    },
+  });
+  return res.status(200).json(output);
+})
+
 
 module.exports = router; 
