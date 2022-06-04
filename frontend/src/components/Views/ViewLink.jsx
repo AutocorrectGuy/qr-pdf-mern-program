@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import NavLeft from "../navbar/NavLeft"
 import NavRight from "../navbar/NavRight"
-import { devModeCheck } from "../../demodeCheck";
 import UserContext from "../../context/UserContext";
 import LoadingScreen from "../utils/LoadingScreen";
 
@@ -33,7 +32,6 @@ export default function Test() {
 
   // const firstUpdate = useRef(true);
   const navigate = useNavigate();
-  const devMode = useRef(false);
   const [cookies] = useCookies([]);
 
   const params = useParams();
@@ -51,7 +49,6 @@ export default function Test() {
   const { userContextData, setUserContextData } = useContext(UserContext);
 
   useEffect(() => {
-    devModeCheck(devMode, cookies, navigate);
 
     // TODO: transform to one request
     if(userContextData.username === undefined) {

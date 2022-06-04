@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGripHorizontal, faHomeAlt, faFileMedical, faSearch,
@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import useWindowSize from "../../hooks/useWindowSize";
 import { useCookies } from "react-cookie";
+import UserContext from "../../context/UserContext";
 
 const hoverText = "hover:text-white transition-width ease-out focus:text-white duration-300 delay-100";
 const liItemConStyles = "flex gap-4 h-10 items-center cursor-pointer select-none text-neutral-400";
@@ -20,6 +21,8 @@ export default function Navbar() {
   const [cookies, setCookie, removeCookie] = useCookies([]);
   const [isOpen, setOpen] = useState(true);
   const size = useWindowSize();
+
+  const { userContextData, setUserContextData } = useContext(UserContext);
 
   useEffect(() => { setOpen(window.innerWidth < 1100 ? false : true); }, [])
   useEffect(() => {
@@ -46,51 +49,65 @@ export default function Navbar() {
                 {isOpen && <div className={`${liItemTextStyles} -translate-x-[3px]`}>Sākums</div>}
               </div>
             </Link>
-            <div>
+            {/* <div>
               <div className={`${liItemConStyles} cursor-not-allowed`}>
                 <FontAwesomeIcon icon={faSearch} className={faIconStyles} />
                 {isOpen && <div className={liItemTextStyles}>Meklēt</div>}
               </div>
-            </div>
-            <Link to="/upload-link" onClick={closeKebabIfSmallScreen}>
-              <div className={`${liItemConStyles} ${hoverText}`}>
-                <FontAwesomeIcon icon={faFileMedical} className={faIconStyles} />
-                {isOpen && <div className={liItemTextStyles}>Pievienot linku</div>}
-              </div>
-            </Link>
-            <Link to="/upload-pdf" onClick={closeKebabIfSmallScreen}>
-              <div className={`${liItemConStyles} ${hoverText}`}>
-                <FontAwesomeIcon icon={faFileUpload} className={faIconStyles} />
-                {isOpen && <div className={liItemTextStyles}>Augšuplādēt katalogu</div>}
-              </div>
-            </Link>
+            </div> */}
+            {
+              (userContextData?.status === "employee" || userContextData?.status === "admin") &&
+              <>
+                <Link to="/upload-link" onClick={closeKebabIfSmallScreen}>
+                  <div className={`${liItemConStyles} ${hoverText}`}>
+                    <FontAwesomeIcon icon={faFileMedical} className={faIconStyles} />
+                    {isOpen && <div className={liItemTextStyles}>Pievienot linku</div>}
+                  </div>
+                </Link>
+                <Link to="/upload-pdf" onClick={closeKebabIfSmallScreen}>
+                  <div className={`${liItemConStyles} ${hoverText}`}>
+                    <FontAwesomeIcon icon={faFileUpload} className={faIconStyles} />
+                    {isOpen && <div className={liItemTextStyles}>Augšuplādēt katalogu</div>}
+                  </div>
+                </Link>
+              </>
+            }
           </div>
           <div className={`${isOpen && "border-b border-b-neutral-600 pb-4 mb-4"}`}>
-            <div>
-              <div className={`${liItemConStyles} cursor-not-allowed`}>
-                <FontAwesomeIcon icon={faFile} className={faIconStyles} />
-                {isOpen && <div className={liItemTextStyles}>Tavi katalogi</div>}
-              </div>
-            </div>
-            <div>
-              <div className={`${liItemConStyles} cursor-not-allowed`}>
-                <FontAwesomeIcon icon={faFilePdf} className={faIconStyles} />
-                {isOpen && <div className={liItemTextStyles}>Noklusējuma katalogi</div>}
-              </div>
-            </div>
+            {
+              (userContextData?.status === "employee" || userContextData?.status === "admin") &&
+              <>
+                <div>
+                  <div className={`${liItemConStyles} cursor-not-allowed`}>
+                    <FontAwesomeIcon icon={faFile} className={faIconStyles} />
+                    {isOpen && <div className={liItemTextStyles}>Tavi katalogi</div>}
+                  </div>
+                </div>
+                <div>
+                  <div className={`${liItemConStyles} cursor-not-allowed`}>
+                    <FontAwesomeIcon icon={faFilePdf} className={faIconStyles} />
+                    {isOpen && <div className={liItemTextStyles}>Noklusējuma katalogi</div>}
+                  </div>
+                </div>
+              </>
+            }
+
             <Link to="/models" onClick={closeKebabIfSmallScreen}>
-            <div className={`${liItemConStyles} ${hoverText}`}>
-              <FontAwesomeIcon icon={faTractor} className={faIconStyles} />
-              {isOpen && <div className={`${liItemTextStyles} -translate-x-[3px]`}>Models</div>}
-            </div>
-          </Link>
+              <div className={`${liItemConStyles} ${hoverText}`}>
+                <FontAwesomeIcon icon={faTractor} className={faIconStyles} />
+                {isOpen && <div className={`${liItemTextStyles} -translate-x-[3px]`}>Models</div>}
+              </div>
+            </Link>
           </div>
-          <div onClick={logOut}>
-            <div className={`${liItemConStyles} ${hoverText}`}>
-              <FontAwesomeIcon icon={faDoorOpen} className={faIconStyles} />
-              {isOpen && <div className={liItemTextStyles}>Iziet</div>}
+          {
+            userContextData.hasOwnProperty("status") &&
+            <div onClick={logOut}>
+              <div className={`${liItemConStyles} ${hoverText}`}>
+                <FontAwesomeIcon icon={faDoorOpen} className={faIconStyles} />
+                {isOpen && <div className={liItemTextStyles}>Iziet</div>}
+              </div>
             </div>
-          </div>
+          }
         </div>
       </div>);
   }
@@ -106,7 +123,7 @@ export default function Navbar() {
           className={`${faIconStyles} 
           bg-black bg-opacity-30 hover:bg-opacity-100 rounded-full p-3 text-neutral-300 hover:text-white cursor-pointer`} />
       </div>
-      <div className="fixed left-7 top-20 flex flex-col justify-between h-full">
+      <div className={`${isOpen && "w-56"} fixed left-7 top-20 flex flex-col justify-between h-full`}>
         <ButtonsTopMenu />
       </div>
     </div>

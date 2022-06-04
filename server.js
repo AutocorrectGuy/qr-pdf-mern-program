@@ -29,9 +29,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors(corsConfig));
 app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', process.env.TEST === undefined
-  ? "https://qrkodi.herokuapp.com" 
-  : "http://localhost:3000");
+  res.header('Access-Control-Allow-Origin', process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"      // react main port;
+    : "https://qrkodi.herokuapp.com") //current main domain
   res.header('Access-Control-Allow-Credentials', true);
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
@@ -41,13 +41,12 @@ app.use("/api/links", linkRouter);
 app.use("/api/pdfs", pdfRouter);
 app.use("/auth", authRouter);
 
-if(process.env.NODE_ENV === "production") {
+// if(process.env.NODE_ENV !== "development") {
   app.use(express.static('frontend/build'));
-  // server any static files
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'build',  "index.html"))
   })
-}
+// }
 
 mongoose.connect(process.env.ATLAS_URI)
   .then(() => {

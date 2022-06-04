@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLinkAlt, faFileAlt } from "@fortawesome/free-solid-svg-icons"
 import { useParams } from "react-router-dom"
+import QuestNavLeft from "../navbar/QuestNavLeft";
 
 
 const searchable = ["HEIZOHACK", "JENZ", "BRUKS", "ALBACH", "DOPPSTADT", "MUSMAX"];
@@ -21,7 +22,9 @@ export default function ViewModelsFolder() {
 
 
   useEffect(() => {
-    // axios.defaults.baseURL = "http://localhost:3001"
+    process.env.REACT_APP_NODE_ENV === 'development'
+      && (axios.defaults.baseURL = process.env.REACT_APP_AXIOS_BASE_URL)
+
     const fetchData = async () => {
       let resString = "";
       try {
@@ -44,29 +47,24 @@ export default function ViewModelsFolder() {
         })
       ))
       pageCountPDF.current = Math.ceil(res.filesData.count / cardsPerPage.current);
-      let socketList = [];
+      let itemsList = [];
       res.filesData.data.map(({ name, _id }) => {
         let nameToSearch = name.toUpperCase();
         const currentFolder = params.id.toUpperCase();
 
         if (nameToSearch.search(currentFolder) !== -1) {
-          console.log("found", nameToSearch)
-          socketList.push(
+          itemsList.push(
             {name: name, _id: _id}
           )
         }
       })
-      setList(socketList);
+      setList(itemsList);
 
       setPDFData(res.filesData.data);
     }
     fetchData();
 
   }, []);
-
-  useEffect(() => {
-    console.log(list);
-  }, [list])
 
   const ToggableButton = ({ name, listItems }) => {
     return (
@@ -105,7 +103,7 @@ export default function ViewModelsFolder() {
   return (
     // <> { Object.keys(userContextData).length === 0 ? <LoadingScreen /> :
     <>
-      <NavLeft />
+      <QuestNavLeft />
       <div className="relative flex justify-center w-full min-h-screen">
         <div className="absolute -z-10 flex justify-center max-w-screen w-full bg-gradient-to-b from-neutral-600 to-neutral-800 brightness-50 h-[400px]"></div>
         <div className="absolute -z-20 flex justify-center max-w-screen w-full bg-neutral-800 brightness-50 max-h-max h-full"></div>

@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import NavLeft from "../navbar/NavLeft"
 import NavRight from "../navbar/NavRight"
-import { devModeCheck } from "../../demodeCheck";
 import UserContext from "../../context/UserContext";
 import NavTop from '../navbar/NavTop';
 import LoadingScreen from '../utils/LoadingScreen';
@@ -18,25 +17,28 @@ import LoadingScreen from '../utils/LoadingScreen';
 const UploadPdf = () => {
   const firstUpdate = useRef(true);
   const navigate = useNavigate();
-  const devMode = useRef(false);
   const [cookies, setCookie, removeCookie] = useCookies([]);
 
   //context
   const { userContextData, setUserContextData } = useContext(UserContext);
   useEffect(() => {
-    devModeCheck(devMode, cookies, navigate);
 
     // TODO: transform to one request
     if(userContextData.username === undefined) {
       console.log("reset token")
       axios.get("/auth/token")
         .then(res => {
+          // check user acess
           setUserContextData(res.data);
         })
         .catch(({response: { status }}) => {
           if(status === 401 || status === 404) navigate("/login")
         })
     }
+
+  Object.keys(userContextData).length === 0 && navigate("/");
+  !userContextData.hasOwnProperty("status") && navigate("/");
+  userContextData.status === "client" && navigate("/");
   }, [])
 
   const [file, setFile] = useState(null);

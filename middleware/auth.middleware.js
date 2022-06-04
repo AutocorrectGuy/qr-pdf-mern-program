@@ -38,7 +38,7 @@ module.exports.checkTokenLight = async (token) => {
       .then((user) => (!user || user === undefined) ? false : {
         user: user._id, 
         username: user.username,
-        status: true
+        status: user.status
       });
     return userFound ? userFound : false;
   } else {
@@ -65,7 +65,7 @@ module.exports.getUserData = async function(token) {
   async function mapDataFromDecodedToken(decodedToken) {
     const user = await User.findById(decodedToken.id);
     let token = {};
-    if (user) token = { status: true, username: user.username };
+    if (user) token = { status: user.status, username: user.username };
     else token = {};
     return token;
   }

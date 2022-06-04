@@ -7,19 +7,13 @@ import NavRight from "../navbar/NavRight"
 import { ToastContainer, toast } from "react-toastify";
 import { toastPropsRegular, tostConPropsRegular } from "../utils/ToastProps"
 import { useCookies } from "react-cookie";
-import { devModeCheck } from "../../demodeCheck";
 import LoadingScreen from "../utils/LoadingScreen";
 import UserContext from "../../context/UserContext";
 import NavTop from "../navbar/NavTop";
-
 import PaginatedList from "../utils/PaginatedList";
 // import useWindowSize from "../../hooks/useWindowSize";
 
-
 export default function CatalogueList() {
-
-  // axios.defaults.baseURL = "http://localhost:3001" 
-
   // useWindowSize();
   const firstUpdate = useRef(true);
   const navigate = useNavigate();
@@ -37,20 +31,29 @@ export default function CatalogueList() {
   const { userContextData, setUserContextData } = useContext(UserContext);
 
   useEffect(() => {
-    devModeCheck(devMode, cookies, navigate);
-    if(userContextData.username === undefined && cookies.hello === undefined) {
-      axios.get("/auth/token")
-        .then(res => {
-          setUserContextData(res.data);
-        })
-        .catch(({response: { status }}) => {
-          if(status === 401 || status === 404) navigate("/login")
-        })
+    process.env.REACT_APP_NODE_ENV === 'development' &&
+      (axios.defaults.baseURL = process.env.REACT_APP_AXIOS_BASE_URL)
+
+    if (userContextData.username === undefined && cookies.hello === undefined) {
+      
+        axios.get("/auth/token")
+          .then(res => {
+            setUserContextData(res.data)
+          }
+            )
+          .catch(({ response: { status } }) =>
+            (status === 401 || status === 404) && navigate("/login")
+          )
+
     }
-    if(userContextData.username === undefined && cookies.hello === undefined) {
-      navigate("/login");
-      return;
-    }
+    // if (userContextData.username === undefined 
+    //   && cookies.hello === undefined
+    //   && process.env.REACT_APP_NODE_ENV === 'development'
+
+    //   ) {
+    //   navigate("/login");
+    //   return;
+    // }
     // .catch(function ({response: { status }}) {
     //   if(devMode.current) return;
     //   if(status === 401 || status === 404) navigate("/login");
@@ -61,11 +64,13 @@ export default function CatalogueList() {
     const fetchData = async () => {
       let resString = "";
       try {
+        process.env.REACT_APP_NODE_ENV === 'development'
+          && (axios.defaults.baseURL = process.env.REACT_APP_AXIOS_BASE_URL)
+
         resString = await axios.get(
           `/api/links/get-links-and-pdfs-ids?page=0&limit=${cardsPerPage.current}`);
       } catch (err) {
-        console.log("bļe nu")
-        console.log(err);        
+        console.log(err);
       }
       let res = JSON.parse(resString.data);
 
@@ -100,38 +105,39 @@ export default function CatalogueList() {
   }, []);
 
   function greetUser() {
-    devMode.current
-      ? toast(`Sveiks, kā tu tiki iekšā bez atļaujas??`, toastPropsRegular)
+    process.env.REACT_APP_NODE_ENV === 'development'
+      ? toast(`Sveiks, meistar`, toastPropsRegular)
       : toast(`Prieks tevi redzēt, ${userContextData.username}`, toastPropsRegular)
     removeCookie("hello");
   }
 
   return (
-    <> { Object.keys(userContextData).length === 0 ? <LoadingScreen /> :
-    <>
-      <NavLeft />
-      <div className="relative flex justify-center w-full min-h-screen">
-        <div className="absolute -z-10 flex justify-center max-w-screen w-full bg-gradient-to-b from-neutral-600 to-neutral-800 brightness-50 h-[400px]"></div>
-        <div className="absolute -z-20 flex justify-center max-w-screen w-full bg-neutral-800 brightness-50 max-h-max h-full"></div>
-        <div className="flex flex-col w-full">
-          <NavTop />
-          <PaginatedList 
-            name={"Katalogu saraksts"} 
-            data={PDFdata} setData={setPDFData}
-            pageOffset={pageOffsetPDF} setPageOffset={setPageOffsetPDF} 
-            cardsPerPage={cardsPerPage} pageCount={pageCountPDF}/>
-          <PaginatedList 
-            name={"Linku saraksts"} 
-            data={linksData} setData={setLinksData}
-            pageOffset={pageOffsetLinks} setPageOffset={setPageOffsetLinks} 
-            cardsPerPage={cardsPerPage} pageCount={pageCountLinks}/>
+    <> {Object.keys(userContextData).length === 0 && process.env.REACT_APP_NODE_ENV !== 'development'
+      ? <LoadingScreen />
+      : <>
+        <NavLeft />
+        <div className="relative flex justify-center w-full min-h-screen">
+          <div className="absolute -z-10 flex justify-center max-w-screen w-full bg-gradient-to-b from-neutral-600 to-neutral-800 brightness-50 h-[400px]"></div>
+          <div className="absolute -z-20 flex justify-center max-w-screen w-full bg-neutral-800 brightness-50 max-h-max h-full"></div>
+          <div className="flex flex-col w-full">
+            <NavTop />
+            <PaginatedList
+              name={"Katalogu saraksts"}
+              data={PDFdata} setData={setPDFData}
+              pageOffset={pageOffsetPDF} setPageOffset={setPageOffsetPDF}
+              cardsPerPage={cardsPerPage} pageCount={pageCountPDF} />
+            <PaginatedList
+              name={"Linku saraksts"}
+              data={linksData} setData={setLinksData}
+              pageOffset={pageOffsetLinks} setPageOffset={setPageOffsetLinks}
+              cardsPerPage={cardsPerPage} pageCount={pageCountLinks} />
+          </div>
         </div>
-      </div>
-      <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}
-        newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover
-      />
-      <NavRight />
-    </>
+        <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}
+          newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover
+        />
+        <NavRight />
+      </>
     } </>
   )
 }
