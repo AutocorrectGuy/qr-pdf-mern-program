@@ -9,6 +9,9 @@ import {
 import useWindowSize from "../../hooks/useWindowSize";
 import { useCookies } from "react-cookie";
 import UserContext from "../../context/UserContext";
+import emailjs from "@emailjs/browser";
+import { ToastContainer, toast } from "react-toastify";
+import { toastPropsRegular, tostConPropsRegular } from "../utils/ToastProps"
 
 const hoverText = "hover:text-white transition-width ease-out focus:text-white duration-300 delay-100";
 const liItemConStyles = "flex gap-4 h-10 items-center select-none text-neutral-400";
@@ -21,8 +24,18 @@ export default function QuestNavLeft() {
   const [cookies, setCookie, removeCookie] = useCookies([]);
   const [isOpen, setOpen] = useState(true);
   const size = useWindowSize();
-
+  const myFromRef = useRef(null);
   const { userContextData, setUserContextData } = useContext(UserContext);
+
+  function sendEmail(e) {
+    e.preventDefault();
+    emailjs.sendForm('chipper_id', 'template_mmecqmo', myFromRef.current, "_QVIulG_T9NxC0nlx")
+      .then(function (response) {
+        toast(`Message sent succesfully!`, toastPropsRegular)
+      }, function (err) {
+        toast(`Something went wrong when sending the message!`, toastPropsRegular)
+      });
+  }
 
   useEffect(() => { setOpen(window.innerWidth < 1100 ? false : true); }, [])
   useEffect(() => {
@@ -36,6 +49,10 @@ export default function QuestNavLeft() {
 
 
   function ButtonsTopMenu() {
+  const [messageValue, setMessageValue] = useState("");
+  const [emailValue, setEmailValue] = useState("");
+  const [phoneValue, setPhoneValue] = useState("");
+
     return (
       <div className="flex flex-col">
         <div className={`${!isOpen && "hidden sm:block"}`}>
@@ -43,43 +60,51 @@ export default function QuestNavLeft() {
             <div>
               <div className={`${liItemConStyles}`}>
                 {isOpen &&
-                  <div className="fixed bg-black top-24 w-56">
+                  <form
+                    ref={myFromRef}
+                    className="fixed bg-black top-24 w-56"
+                    onSubmit={(e) => { sendEmail(e) }}
+                  >
                     <div className={`${liItemTextStyles}`}>LEAVE QUESTION ABOUT</div>
                     <div className={`${liItemTextStyles}`}>CHIPPER PARTS HERE!</div>
-                      <textarea
-                        type={"text"}
-                        placeholder="Enter your question here"
-                        name="textarea"
-                        rows={10}
-                        className="flex w-full px-2 py-2 mt-2 text-white placeholder:text-neutral-300 bg-neutral-600 transition duration-300 rounded focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      // onChange={(e) =>
-                      //   setValues({ ...values, [e.target.name]: e.target.value })
-                      // }
-                      />
-                    <div className={`${liItemTextStyles} mt-8`}>Your</div>
+                    <textarea
+                      type={"text"}
+                      placeholder="Enter your question here"
+                      name="message"
+                      value={messageValue}
+                      onChange={(e) => { setMessageValue(e.target.value) }}
+                      rows={10}
+                      className="flex w-full px-2 py-2 mt-2 text-white placeholder:text-neutral-300 bg-neutral-600 transition duration-300 rounded focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
                     <input
-                        type={"text"}
-                        placeholder="Email"
-                        name="textarea"
-                        rows={10}
-                        className="flex w-full px-2 py-2 mt-2 text-white placeholder:text-neutral-300 bg-neutral-600 transition duration-300 rounded focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      // onChange={(e) =>
-                      //   setValues({ ...values, [e.target.name]: e.target.value })
-                      // }
-                      />
-                    <div className={`${liItemTextStyles} mt-2`}>or</div>
+                      type={"text"}
+                      placeholder="Your email"
+                      name="email"
+                      value={emailValue}
+                      onChange={(e) => { setEmailValue(e.target.value) }}
+                      className="flex w-full px-2 py-2 mt-2 text-white placeholder:text-neutral-300 bg-neutral-600 transition duration-300 rounded focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
                     <input
-                        type={"text"}
-                        placeholder="Phone number"
-                        name="textarea"
-                        rows={10}
-                        className="flex w-full px-2 py-2 mt-2 text-white placeholder:text-neutral-300 bg-neutral-600 transition duration-300 rounded focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      // onChange={(e) =>
-                      //   setValues({ ...values, [e.target.name]: e.target.value })
-                      // }
-                      />
-                    
-                  </div>
+                      type={"text"}
+                      placeholder="Your phone number"
+                      name="phone"
+                      value={phoneValue}
+                      onChange={(e) => { setPhoneValue(e.target.value) }}
+                      className="flex w-full px-2 py-2 mt-2 text-white placeholder:text-neutral-300 bg-neutral-600 transition duration-300 rounded focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    <input
+                      type="submit"
+                      className={`
+                      ${messageValue.length > 0 
+                        ? (phoneValue.length > 0 || emailValue.length > 0 || phoneValue.length > 0 && emailValue.length > 0)
+                          ? "bg-blue-500 pointer-events-auto cursor-pointer" 
+                          : "bg-neutral-500 pointer-events-none "
+                        : "bg-neutral-500 pointer-events-none "
+                      }
+                          flex mx-auto text-white font-semibold px-4 py-2 mt-8`}
+                      value={"Submit question"}
+                    ></input>
+                  </form>
                 }
               </div>
             </div>
@@ -102,6 +127,9 @@ export default function QuestNavLeft() {
       <div className={`${isOpen && "w-56"} fixed left-7 top-20 flex flex-col justify-between h-full`}>
         <ButtonsTopMenu />
       </div>
+      <ToastContainer position="bottom-left" autoClose={5000} hideProgressBar={false}
+          newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover
+        />
     </div>
   )
 }

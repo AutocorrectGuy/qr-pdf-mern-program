@@ -56,7 +56,7 @@ export default function ViewPdf() {
     process.env.REACT_APP_NODE_ENV === 'development' &&
       (axios.defaults.baseURL = process.env.REACT_APP_AXIOS_BASE_URL)
 
-    if (process.env.REACT_APP_NODE_ENV !== 'development' && !userContextData.hasOwnProperty(name)) {
+    if (process.env.REACT_APP_NODE_ENV !== 'development' && !userContextData.hasOwnProperty("username")) {
       axios.get("/auth/token")
         .then(res => {
           setUserContextData(res.data);
@@ -74,8 +74,6 @@ export default function ViewPdf() {
         if (devMode.current) return;
         if (status === 401 || status === 404) navigate("/login");
       });
-
-      console.log(userContextData);
   }, [])
 
   useEffect(() => {

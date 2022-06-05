@@ -51,7 +51,7 @@ export default function Test() {
   useEffect(() => {
 
     // TODO: transform to one request
-    if(userContextData.username === undefined) {
+    if(process.env.REACT_APP_NODE_ENV !== 'development' && !userContextData.hasOwnProperty("username")) {
       console.log("reset token")
       axios.get("/auth/token")
         .then(res => {
@@ -76,7 +76,7 @@ export default function Test() {
       return;
     }
     QRCode.toDataURL(
-      window.location.href, { 
+      data.link, { 
       errorCorrectionLevel: "L", 
       margin: 4, color: { dark: data.color1, light: data.color2}
     }).then((data) => setQRCode(data));
@@ -180,7 +180,10 @@ export default function Test() {
                     </CopyToClipboard>
                   </div>
                 </div>
-                <div className="flex flex-col my-10 border border-neutral-800 rounded-md">
+
+                {
+                  (userContextData.status === "employee" || userContextData.status === "admin") &&
+                  <div className="flex flex-col my-10 border border-neutral-800 rounded-md">
                   <div className="flex justify-between items-center p-4 gap-2 border-t border-t-neutral-800 border-b border-b-neutral-800">
                     <div className="flex flex-col">
                       <p className="text-neutral-300 font-semibold text-sm">Apskatīt saiti</p>
@@ -223,6 +226,10 @@ export default function Test() {
                     }
                   </div>
                 </div>
+                }
+
+
+
               </div>
             </div>
           }
