@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useRef, useContext, Children } from "react";
 import QRCode from "qrcode";
-import { useNavigate } from "react-router-dom";
-import NavLeft from "../navbar/NavLeft"
 import { ToastContainer, toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList, faExternalLinkAlt, faFileAlt } from "@fortawesome/free-solid-svg-icons"
@@ -12,7 +10,7 @@ import QuestNavLeft from "../navbar/QuestNavLeft";
 
 const searchable = ["HEIZOHACK", "JENZ", "BRUKS", "ALBACH", "DOPPSTADT", "MUSMAX", "BIBER", "SILVATOR", "ESCHLBOCK", "PEZZOLATO"];
 
-export default function ViewModels() {
+export default function ViewModels({ folderName }) {
   const cardsPerPage = useRef(6);
   const pageCountPDF = useRef(0);
   const [pageOffsetPDF, setPageOffsetPDF] = useState(0);
@@ -46,18 +44,35 @@ export default function ViewModels() {
       ))
       pageCountPDF.current = Math.ceil(res.filesData.count / cardsPerPage.current);
       let itemsList = {};
-      res.filesData.data.map(({ name, _id }) => {
-        let nameToSearch = name.toUpperCase();
 
-        searchable.forEach(item => {
-          if (nameToSearch.search(item) !== -1) {
-            itemsList[item] === undefined
-              ? itemsList[item] = [{ name: nameToSearch, _id: _id }]
-              : itemsList[item] = [...itemsList[item], { name: nameToSearch, _id: _id }]
-            return;
-          }
-        });
-      })
+      if (folderName === "es") {
+        res.filesData.data.map(({ name, _id }) => {
+          let nameToSearch = name.toUpperCase();
+          if (folderName === "es" && nameToSearch.endsWith("ES"))
+            searchable.forEach(item => {
+              if (nameToSearch.search(item) !== -1) {
+                itemsList[item] === undefined
+                  ? itemsList[item] = [{ name: nameToSearch, _id: _id }]
+                  : itemsList[item] = [...itemsList[item], { name: nameToSearch, _id: _id }]
+                return;
+              }
+            });
+        })
+      } else {
+        res.filesData.data.map(({ name, _id }) => {
+          let nameToSearch = name.toUpperCase();
+          if (folderName !== "es" && !nameToSearch.endsWith("ES"))
+            searchable.forEach(item => {
+              if (nameToSearch.search(item) !== -1) {
+                itemsList[item] === undefined
+                  ? itemsList[item] = [{ name: nameToSearch, _id: _id }]
+                  : itemsList[item] = [...itemsList[item], { name: nameToSearch, _id: _id }]
+                return;
+              }
+            });
+        })
+      }
+
       setList(itemsList);
 
       setPDFData(res.filesData.data);
@@ -72,14 +87,14 @@ export default function ViewModels() {
       <>
         <button
           onClick={() => { setOpen(!open) }}
-          className={`hover:brightness-150
+          className={`hover:brightness-150  
           text-neutral-200 select-none py-2 px-3 flex flex-col bg-opacity-10 
             ${index % 2 ? "bg-neutral-700" : "bg-neutral-200"}`}
         >
           <div
             className="flex w-full justify-between items-center active:translate-y-px">
             <div className="flex items-center gap-3">
-              <FontAwesomeIcon icon={faList} className="text-white w-4 h-4" />
+              <FontAwesomeIcon icon={faList} className={`${(folderName === "es") ? "text-green-400" : "text-blue-400"} w-4 h-4`} />
               <div>{`${name} (${listItems.length})`}</div>
             </div>
             <div className="flex">
