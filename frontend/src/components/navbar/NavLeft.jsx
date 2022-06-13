@@ -93,9 +93,15 @@ export default function Navbar() {
             }
 
             <Link to="/models" onClick={closeKebabIfSmallScreen}>
-              <div className={`${liItemConStyles} ${hoverText}`}>
-                <FontAwesomeIcon icon={faTractor} className={faIconStyles} />
+              <div className={`${liItemConStyles} text-sky-200 ${hoverText}`}>
+                <FontAwesomeIcon icon={faTractor} className={`${faIconStyles} hover:text-white`} />
                 {isOpen && <div className={`${liItemTextStyles} -translate-x-[3px]`}>Models</div>}
+              </div>
+            </Link>
+            <Link to="/modelses" onClick={closeKebabIfSmallScreen}>
+              <div className={`${liItemConStyles} text-green-200 ${hoverText}`}>
+                <FontAwesomeIcon icon={faTractor} className={`${faIconStyles} hover:text-white`} />
+                {isOpen && <div className={`${liItemTextStyles} -translate-x-[3px]`}>Models-ES</div>}
               </div>
             </Link>
           </div>
