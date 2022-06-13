@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom"
 import QuestNavLeft from "../navbar/QuestNavLeft";
 
 
-const searchable = ["HEIZOHACK", "JENZ", "BRUKS", "ALBACH", "DOPPSTADT", "MUSMAX"];
+const searchable = ["HEIZOHACK", "JENZ", "BRUKS", "ALBACH", "DOPPSTADT", "MUSMAX", "DIAMANT"];
 
 export default function ViewModelsFolder({folderName}) {
   const cardsPerPage = useRef(6);
