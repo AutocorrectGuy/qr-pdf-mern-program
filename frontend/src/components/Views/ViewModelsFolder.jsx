@@ -74,7 +74,7 @@ export default function ViewModelsFolder({folderName}) {
             {listItems.map((item, index2) =>
               <a 
                 key={`li-${name}-${index2}`}
-                href={`${window.location.href.replace("/models","").replace(`/${params.id}`,"")}/api/pdfs/file/${item._id}`}
+                href={`${window.location.href.replace(folderName === "es" ? "/modelses" : "/models","").replace(`/${params.id}`,"")}/api/pdfs/file/${item._id}`}
                 target="_blank"
                 rel="noreferrer"
                 className={`hover:brightness-90 
