@@ -43,7 +43,7 @@ export default function ViewModels({ folderName }) {
       pageCountPDF.current = Math.ceil(res.filesData.count / cardsPerPage.current);
       let itemsList = {};
 
-      let searchable = ["HEIZOHACK", "JENZ", "BRUKS", "ALBACH", "DOPPSTADT", "MUSMAX", "PEZZOLATO", "SILVATOR"];
+      let searchable = ["HEIZOHACK", "JENZ", "BRUKS", "ALBACH", "DOPPSTADT", "MUSMAX", "PEZZOLATO", "SILVATOR", "DIAMANT"];
       if (folderName === "es") {
         searchable.push("ESCHLBOCK BIBER")
         res.filesData.data.map(({ name, _id }) => {
