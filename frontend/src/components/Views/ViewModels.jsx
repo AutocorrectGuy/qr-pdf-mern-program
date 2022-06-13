@@ -8,8 +8,6 @@ import { Link } from "react-router-dom";
 import LoadingScreen from "../utils/LoadingScreen";
 import QuestNavLeft from "../navbar/QuestNavLeft";
 
-const searchable = ["HEIZOHACK", "JENZ", "BRUKS", "ALBACH", "DOPPSTADT", "MUSMAX", "BIBER", "SILVATOR", "ESCHLBOCK", "PEZZOLATO"];
-
 export default function ViewModels({ folderName }) {
   const cardsPerPage = useRef(6);
   const pageCountPDF = useRef(0);
@@ -45,7 +43,9 @@ export default function ViewModels({ folderName }) {
       pageCountPDF.current = Math.ceil(res.filesData.count / cardsPerPage.current);
       let itemsList = {};
 
+      let searchable = ["HEIZOHACK", "JENZ", "BRUKS", "ALBACH", "DOPPSTADT", "MUSMAX", "PEZZOLATO", "SILVATOR"];
       if (folderName === "es") {
+        searchable.push("ESCHLBOCK BIBER")
         res.filesData.data.map(({ name, _id }) => {
           let nameToSearch = name.toUpperCase();
           if (folderName === "es" && nameToSearch.endsWith("ES"))
@@ -59,6 +59,7 @@ export default function ViewModels({ folderName }) {
             });
         })
       } else {
+        searchable.push("BIBER")
         res.filesData.data.map(({ name, _id }) => {
           let nameToSearch = name.toUpperCase();
           if (folderName !== "es" && !nameToSearch.endsWith("ES"))
@@ -72,9 +73,7 @@ export default function ViewModels({ folderName }) {
             });
         })
       }
-
       setList(itemsList);
-
       setPDFData(res.filesData.data);
     }
     fetchData();
@@ -114,12 +113,18 @@ export default function ViewModels({ folderName }) {
             {listItems.map((item, index2) =>
               <a
                 key={`li-${name}-${index2}`}
-                href={`${window.location.href.replace("/models", "")}/api/pdfs/file/${item._id}`}
+                href={`${window.location.href.replace(folderName === "es" ? "/modelses" : "/models", "")}/api/pdfs/file/${item._id}`}
                 target="_blank"
                 rel="noreferrer"
                 className={`hover:brightness-90
                   flex gap-3 px-3 items-center cursor-pointer
-                  ${index2 % 2 ? "bg-sky-300" : "bg-sky-500"}`
+                  ${index2 % 2 
+                    ? `${folderName === "es" 
+                      ? "bg-green-300" 
+                      : "bg-sky-300"}` 
+                    : `${folderName === "es" 
+                      ? "bg-green-500" 
+                      : "bg-sky-500"}`}`
                 }>
                 <FontAwesomeIcon icon={faFileAlt} className="text-black-600 w-5 h-5" />
                 <div>

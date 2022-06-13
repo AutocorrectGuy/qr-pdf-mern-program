@@ -12,7 +12,7 @@ import QuestNavLeft from "../navbar/QuestNavLeft";
 
 const searchable = ["HEIZOHACK", "JENZ", "BRUKS", "ALBACH", "DOPPSTADT", "MUSMAX"];
 
-export default function ViewModelsFolder() {
+export default function ViewModelsFolder({folderName}) {
   const cardsPerPage = useRef(6);
   const pageCountPDF = useRef(0);
   const [pageOffsetPDF, setPageOffsetPDF] = useState(0);
@@ -63,7 +63,7 @@ export default function ViewModelsFolder() {
       setPDFData(res.filesData.data);
     }
     fetchData();
-
+    console.log(folderName)
   }, []);
 
   const ToggableButton = ({ name, listItems }) => {
@@ -79,7 +79,13 @@ export default function ViewModelsFolder() {
                 rel="noreferrer"
                 className={`hover:brightness-90 
                   flex justify-between px-4 py-4 items-center cursor-pointer
-                  ${index2 % 2 ? "bg-sky-300" : "bg-sky-500"}`
+                  ${index2 % 2 
+                    ? `${folderName === "es" 
+                      ? "bg-green-300" 
+                      : "bg-sky-300"}` 
+                    : `${folderName === "es" 
+                      ? "bg-green-500" 
+                      : "bg-sky-500"}`}`
               }>
                 <div className="flex justify-between gap-3 items-center">
                   <FontAwesomeIcon icon={faFileAlt} className="text-black-600 w-7 h-7"/>

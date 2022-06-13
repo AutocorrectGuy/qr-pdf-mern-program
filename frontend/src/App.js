@@ -36,7 +36,7 @@ function App() {
                 <Route path="/links/:id" element={<ViewLink />} />
                 <Route path="/models" element={<ViewModels />} />
                 <Route path="/modelses" element={<ViewModels folderName={"es"}/>} />
-                <Route path="/modelses/:id" element={<ViewModelsFolder />} />
+                <Route path="/modelses/:id" element={<ViewModelsFolder folderName={"es"}/>} />
               </Routes>
             </UserContext.Provider>
         </Router>
