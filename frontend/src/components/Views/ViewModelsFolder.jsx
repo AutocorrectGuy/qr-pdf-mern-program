@@ -9,9 +9,6 @@ import { faExternalLinkAlt, faFileAlt } from "@fortawesome/free-solid-svg-icons"
 import { useParams } from "react-router-dom"
 import QuestNavLeft from "../navbar/QuestNavLeft";
 
-
-const searchable = ["HEIZOHACK", "JENZ", "BRUKS", "ALBACH", "DOPPSTADT", "MUSMAX", "DIAMANT"];
-
 export default function ViewModelsFolder({folderName}) {
   const cardsPerPage = useRef(6);
   const pageCountPDF = useRef(0);
@@ -36,29 +33,31 @@ export default function ViewModelsFolder({folderName}) {
       }
       let res = JSON.parse(resString.data);
 
-      // GENERATE TOP 1ST LIST QR CODES
-      res.filesData.data.map(async (card) => (
-        card.qrCode = await QRCode.toDataURL(`${window.location.href}api/pdfs/file/${card._id}`, {
-          errorCorrectionLevel: "L",
-          margin: 4,
-          color: {
-            dark: card.colors.split(",")[0],
-            light: card.colors.split(",")[1]
+      let itemsList = [];
+      if(folderName === "es") {
+        res.filesData.data.map(({ name, _id }) => {
+          let nameToSearch = name.toUpperCase();
+          const currentCatalogueName = params.id.toUpperCase();
+          
+          if (nameToSearch.search(currentCatalogueName) !== -1 && nameToSearch.endsWith("ES")) {
+            itemsList.push(
+              {name: name, _id: _id}
+            )
           }
         })
-      ))
-      pageCountPDF.current = Math.ceil(res.filesData.count / cardsPerPage.current);
-      let itemsList = [];
-      res.filesData.data.map(({ name, _id }) => {
-        let nameToSearch = name.toUpperCase();
-        const currentFolder = params.id.toUpperCase();
-
-        if (nameToSearch.search(currentFolder) !== -1) {
-          itemsList.push(
-            {name: name, _id: _id}
-          )
-        }
-      })
+      } else {
+        res.filesData.data.map(({ name, _id }) => {
+          let nameToSearch = name.toUpperCase();
+          const currentCatalogueName = params.id.toUpperCase();
+          
+          if (nameToSearch.search(currentCatalogueName) !== -1 && !nameToSearch.endsWith("ES")) {
+            itemsList.push(
+              {name: name, _id: _id}
+            )
+          }
+        })
+      }
+      
       setList(itemsList);
 
       setPDFData(res.filesData.data);
