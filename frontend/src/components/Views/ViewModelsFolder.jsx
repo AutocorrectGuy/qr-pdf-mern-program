@@ -19,6 +19,7 @@ export default function ViewModelsFolder({folderName}) {
   const [PDFdata, setPDFData] = useState(false);
   const [list, setList] = useState({});
   const params = useParams();
+  const hrefAdressWithSpaces = useRef(params.id.replace(" ", "%20"));
 
 
   useEffect(() => {
@@ -63,7 +64,7 @@ export default function ViewModelsFolder({folderName}) {
       setPDFData(res.filesData.data);
     }
     fetchData();
-    console.log(folderName)
+    console.log(params.id);
   }, []);
 
   const ToggableButton = ({ name, listItems }) => {
@@ -74,7 +75,10 @@ export default function ViewModelsFolder({folderName}) {
             {listItems.map((item, index2) =>
               <a 
                 key={`li-${name}-${index2}`}
-                href={`${window.location.href.replace(folderName === "es" ? "/modelses" : "/models","").replace(`/${params.id}`,"")}/api/pdfs/file/${item._id}`}
+                href={`${window.location.href.replace(
+                  folderName === "es" 
+                    ? "/modelses" 
+                    : "/models","").replace(`/${hrefAdressWithSpaces.current}`,"")}/api/pdfs/file/${item._id}`}
                 target="_blank"
                 rel="noreferrer"
                 className={`hover:brightness-90 
