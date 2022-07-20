@@ -1,43 +1,10 @@
 const User = require("../models/User");
-const jwt = require("jsonwebtoken");
+const SHAREPOINT_BOT = require("./bot.controller")
 const { getUserData, checkTokenLight } = require("../middleware/auth.middleware");
+const { handleErrors } = require("./AuthUtils/handleAuthErrors")
+const JWT = require ("./AuthUtils/JWT")
 
 require("dotenv").config();
-
-const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: maxAge,
-  });
-};
-
-const handleErrors = (err) => {
-  let errors = { username: "", password: "", secret: "" };
-
-  console.log(err);
-  if (err.hasOwnProperty("message")) {
-    if (err.message === "incorrect username")
-      errors.username = "That username is not registered";
-
-    if (err.message === "incorrect password")
-      errors.password = "That password is incorrect";
-
-    if (err.code === 11000) {
-      errors.username = "username is already registered";
-      return errors;
-    }
-
-    if (err.message.includes("Users validation failed")) {
-      Object.values(err.errors).forEach(({ properties }) => {
-        errors[properties.path] = properties.message;
-      });
-    }
-    // if(err.message.includes("Employee validation failed")) {
-    //   errors.userStatus = "wow ma";
-    // }
-  }
-  return errors;
-};
 
 module.exports.register_POST = async (req, res, next) => {
   const { username, password, secret, secretChecked } = req.body;
@@ -59,9 +26,9 @@ module.exports.register_POST = async (req, res, next) => {
     });
 
     // create login acess token
-    const token = createToken(user._id);
-    res.cookie("hello", {}, { httpOnly: false, maxAge: maxAge * 1000 });
-    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 })
+    const token = JWT.createToken(user._id);
+    res.cookie("hello", {}, { httpOnly: false, maxAge: JWT.maxAge * 1000 });
+    res.cookie("jwt", token, { httpOnly: true, maxAge: JWT.maxAge * 1000 })
 
     res.status(201).json({
       user: user._id,
@@ -76,22 +43,11 @@ module.exports.register_POST = async (req, res, next) => {
 
 module.exports.login_POST = async (req, res) => {
   const { username, password } = req.body;
-  try {
-    const user = await User.login(username, password);
-    const token = createToken(user._id);
-
-    res.cookie("hello", {},  { httpOnly: false, maxAge: maxAge * 1000 });
-    res.cookie("jwt", token, { httpOnly: true,  maxAge: maxAge * 1000 });
-
-    res.status(200).json({
-      user: user._id,
-      username: user.username,
-      status: user.status
-    });
-  } catch (err) {
-    const errors = handleErrors(err);
-    res.json({ errors, status: false });
-  }
+  const user = await User.login(username, password);
+  
+  SHAREPOINT_BOT._is_logged_in(username, password)
+    ? SHAREPOINT_BOT._LOGIN_BOT(user, res)
+    : loginUser(user, res)
 };
 
 module.exports.logout_GET = (req, res) => {
@@ -110,4 +66,22 @@ module.exports.GET_TOKEN = async (req, res) => {
     return res.status(401).json({ "info": "invalid token" });
   }
   else res.status(200).json(token);
+}
+
+function loginUser(user, res) {
+  console.log("Hello", user.username)
+  try {
+    const token = JWT.createToken(user._id);
+    res.cookie("hello", {}, { httpOnly: false, maxAge: JWT.maxAge * 1000 })
+    res.cookie("jwt", token, { httpOnly: true,  maxAge: JWT.maxAge * 1000 })
+
+    res.status(200).json({
+      user: user._id,
+      username: user.username,
+      status: user.status
+    });
+  } catch (err) {
+    const errors = handleErrors(err);
+    res.json({ errors, status: false });
+  }
 }

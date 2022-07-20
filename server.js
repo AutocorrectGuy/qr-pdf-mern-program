@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser')
 const linkRouter = require("./routes/link.routes");
 const pdfRouter = require("./routes/pdf.routes");
 const authRouter = require("./routes/authorization.routes");
+const botRouter = require("./routes/bot.routes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -40,6 +41,7 @@ app.use(function(req, res, next) {
 app.use("/api/links", linkRouter);
 app.use("/api/pdfs", pdfRouter);
 app.use("/auth", authRouter);
+app.use("/api/bot", botRouter);
 
 // if(process.env.NODE_ENV !== "development") {
   app.use(express.static('frontend/build'));

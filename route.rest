@@ -2,17 +2,24 @@ GET http://localhost:3001/
 ### 
 
 // Registerw
-POST http://localhost:3001/catalogues/add
+POST http://localhost:3001/api/links/upload
 content-type: application/json
 
 { 
-  "name": "Katalogs 1",
-  "link": "links 1"
+  "name": "REST 1",
+  "link": "google.lv/google",
+  "color1": "#00FF00",
+  "color2": "#FF00FF",
+  "username": "rest-test"
 }
 ###
 
-// List of all links
+// List of all links an all files ids and metadata
 GET http://localhost:3001/api/links/get-links-and-pdfs-ids
+###
+
+// List of all links ONLY
+GET http://localhost:3001/api/links/get-link-data
 ###
 
 // Select one
@@ -24,52 +31,6 @@ DELETE http://localhost:3001/api/links/627ea2a0fc626afe341333a2
 ###
 
 
-
-
-// fetch main page data
-GET http://localhost:3001/api/links/get-links-and-pdfs-ids
-###
-
-// Select one file JSON object
-GET http://localhost:3001/api/pdfs/json/627eabdc1192da0b3d44c893
-###
-
-// Delete one file
-DELETE http://localhost:3001/api/pdfs/delete/62827c3762f4ac289932c729
-###
-
-// Delete one file
-GET http://localhost:3001/api/pdfs/getall
-###
-
-// --------- REGISTER
-
-POST http://localhost:3001/auth/signup
-content-type: application/json
-
-{ 
-  "username": "User1",
-  "password": "Password1"
-}
-###
-
-// --------- LOGIN
-POST http://localhost:3001/auth/login
-content-type: application/json
-
-{ 
-  "username": "User1",
-  "password": "Password1"
-}
-###
-
-GET http://localhost:3001/auth/test
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyODUwMDRjYjFlM2IxODNiNGYxNzI5NyIsImlhdCI6MTY1Mjg5NTQwNywiZXhwIjoxNjUyODk1NDM3fQ._OnxmoLvH_10BUVkPk4gjegrotVbPCgmWsS7_2rFIwU
-###
-
-GET http://localhost:3001/auth/logout
-###
-
-GET http://localhost:3001/auth/refresh
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyODUwMDRjYjFlM2IxODNiNGYxNzI5NyIsImlhdCI6MTY1Mjg5NTIxNSwiZXhwIjoxNjUyODk1MjQ1fQ.wM7a7m14SuCFaz7Hb72HVal58J4v0dxuKqosuI_J2ZQ
+// BOT TESTING
+GET http://localhost:3001/api/bot/links-data
 ###

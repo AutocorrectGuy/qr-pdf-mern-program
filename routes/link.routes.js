@@ -4,8 +4,6 @@ const mongoose = require('mongoose');
 const LinkModel = require("../models/catalogue.model");
 const PdfModel = require("../models/pdf.model");
 const { getUserData } = require("../middleware/auth.middleware");
-const User = require("../models/User");
-const jwt = require("jsonwebtoken");
 
 const mongoURI = process.env.ATLAS_URI;
 const conn = mongoose.createConnection(mongoURI, {
@@ -20,6 +18,12 @@ conn.once('open', () => {
 });
 
 router.post("/upload", (req, res) => {
+  console.log("uploading new link...")
+  console.log(req.body.name)
+  console.log(req.body.link)
+  console.log(req.body.color1)
+  console.log(req.body.color2)
+  console.log(req.body.author)
   const catalogue = {
     name: req.body.name,
     link: req.body.link,
@@ -29,8 +33,14 @@ router.post("/upload", (req, res) => {
   };
   const newCatalogue = new LinkModel(catalogue);
   newCatalogue.save()
-    .then(() => res.json(`Catalogue "${catalogue.name}" added succesfully!`))
-    .catch(err => res.status(400).json(`Error +_+: ${err}`))
+    .then(() => {
+      console.log("upload succesfull!")
+      res.json(`Catalogue "${catalogue.name}" added succesfully!`)
+    })
+    .catch(err => {
+      console.log("Upload failed")
+      res.status(400).json(`Error +_+: ${err}`)
+    })
 })
 
 router.get('/json/:id', (req, res) => {
@@ -97,23 +107,5 @@ router.get("/get-links-and-pdfs-ids", async (req, res) => {
   });
   return res.status(200).json(output);
 })
-
-router.get("/get-models", async (req, res) => {
-  const filesInfo = await PdfModel.find();
-
-  const mappedFilesData = (!filesInfo || filesInfo.length === 0)
-    ? []
-    : filesInfo.map(({ _id, metadata: { name, author, colors } }) => ({
-      _id, name, author, colors
-    }));
-
-  const output = JSON.stringify({
-    filesData: {
-      data: mappedFilesData
-    },
-  });
-  return res.status(200).json(output);
-})
-
 
 module.exports = router; 
