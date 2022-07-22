@@ -30,7 +30,7 @@ router.delete("/delete/:id", (req, res) => {
 })
 
 router.post("/sync-sharepoint", async (req, res) => {
-  console.log("syncing sharepoing with db...")
+  console.log("syncing sharepoint with db...")
 
   const sharepointFiles = req.body.fileNames
   const links = await LinkModel.find()
