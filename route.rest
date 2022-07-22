@@ -34,3 +34,11 @@ DELETE http://localhost:3001/api/links/627ea2a0fc626afe341333a2
 // BOT TESTING
 GET http://localhost:3001/api/bot/links-data
 ###
+
+POST http://localhost:3001/api/bot/sync-sharepoint
+content-type: application/json
+
+{
+  "fileNames": ["file1.txt", "file2.txt", "file3.txt", "file4.txt"]
+}
+###
