@@ -1,7 +1,6 @@
 import axios from "axios";
-import { useEffect, useState, useRef, useContext, Children } from "react";
-import QRCode from "qrcode";
-import { ToastContainer, toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList, faExternalLinkAlt, faFileAlt } from "@fortawesome/free-solid-svg-icons"
 import { Link } from "react-router-dom";
@@ -9,10 +8,7 @@ import LoadingScreen from "../utils/LoadingScreen";
 import QuestNavLeft from "../navbar/QuestNavLeft";
 
 export default function ViewModels({ folderName }) {
-  const cardsPerPage = useRef(6);
-  const pageCountPDF = useRef(0);
-  const [pageOffsetPDF, setPageOffsetPDF] = useState(0);
-  const [PDFdata, setPDFData] = useState(false);
+  const [, setPDFData] = useState(false);
   const [list, setList] = useState({});
 
   useEffect(() => {
@@ -20,27 +16,16 @@ export default function ViewModels({ folderName }) {
     process.env.REACT_APP_NODE_ENV === 'development'
       && (axios.defaults.baseURL = process.env.REACT_APP_AXIOS_BASE_URL)
 
+    console.log(axios.defaults.baseURL)
     const fetchData = async () => {
       let resString = "";
       try {
-        resString = await axios.get(`/get-links-and-pdfs-ids`);
+        resString = await axios.get(`api/links/get-models`);
       } catch (err) {
         console.log(err);
       }
       let res = JSON.parse(resString.data);
 
-      // GENERATE TOP 1ST LIST QR CODES
-      res.filesData.data.map(async (card) => (
-        card.qrCode = await QRCode.toDataURL(`${window.location.href}api/pdfs/file/${card._id}`, {
-          errorCorrectionLevel: "L",
-          margin: 4,
-          color: {
-            dark: card.colors.split(",")[0],
-            light: card.colors.split(",")[1]
-          }
-        })
-      ))
-      pageCountPDF.current = Math.ceil(res.filesData.count / cardsPerPage.current);
       let itemsList = {};
 
       let searchable = ["HEIZOHACK", "JENZ", "BRUKS", "ALBACH", "DOPPSTADT", "MUSMAX", "PEZZOLATO", "SILVATOR", "DIAMANT"];

@@ -18,12 +18,6 @@ conn.once('open', () => {
 });
 
 router.post("/upload", (req, res) => {
-  console.log("uploading new link...")
-  console.log(req.body.name)
-  console.log(req.body.link)
-  console.log(req.body.color1)
-  console.log(req.body.color2)
-  console.log(req.body.author)
   const catalogue = {
     name: req.body.name,
     link: req.body.link,
@@ -110,9 +104,8 @@ router.get("/get-links-and-pdfs-ids", async (req, res) => {
 
 router.get("/get-models", async (req, res) => {
   const filesInfo = await PdfModel.find();
-
   const mappedFilesData = (!filesInfo || filesInfo.length === 0)
-    ? []
+  ? []
     : filesInfo.map(({ _id, metadata: { name, author, colors } }) => ({
       _id, name, author, colors
     }));
