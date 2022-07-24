@@ -23,7 +23,7 @@ export default function ViewModels({ folderName }) {
     const fetchData = async () => {
       let resString = "";
       try {
-        resString = await axios.get(`/api/links/get-models`);
+        resString = await axios.get(`/get-links-and-pdfs-ids`);
       } catch (err) {
         console.log(err);
       }

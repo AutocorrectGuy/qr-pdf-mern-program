@@ -108,4 +108,21 @@ router.get("/get-links-and-pdfs-ids", async (req, res) => {
   return res.status(200).json(output);
 })
 
+router.get("/get-models", async (req, res) => {
+  const filesInfo = await PdfModel.find();
+
+  const mappedFilesData = (!filesInfo || filesInfo.length === 0)
+    ? []
+    : filesInfo.map(({ _id, metadata: { name, author, colors } }) => ({
+      _id, name, author, colors
+    }));
+
+  const output = JSON.stringify({
+    filesData: {
+      data: mappedFilesData
+    },
+  });
+  return res.status(200).json(output);
+})
+
 module.exports = router; 
