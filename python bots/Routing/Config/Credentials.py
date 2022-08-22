@@ -9,7 +9,7 @@ loginJSON = {
 newEntryTemplate = {
   "name": "test-name",
   "link": "link-name",
-  "color1": "#FFFFFF",
-  "color2": "#FF0000",
+  "color1": "#FF0000",
+  "color2": "#FFFFFF",
   "username": "bot-1"
 }

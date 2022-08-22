@@ -15,10 +15,10 @@ slugAfter = "&parent=%2Fsites%2FQRcatalogue%2FShared%20Documents%2F"
 t = None
 secondsDelayTillNewRequest = 5
 
-def resetTimer(files):
+def resetTimer(fileNamesAndUrls):
   def callBack():
-    print(files)
-    sync_sharepoint(files)
+    print(fileNamesAndUrls)
+    sync_sharepoint(fileNamesAndUrls)
   global t
   if t != None:
     t.cancel()
@@ -28,7 +28,12 @@ def resetTimer(files):
 def getFileNameSlurs(fileNames):
   result = []
   for fn in fileNames:
-    result.__iadd__([slugBefore + urllib.parse.quote(fn).replace(".", "%2E") + slugAfter])
+    # [0]: file name
+    # [1]: slurred url to sharepoint
+    result.__iadd__([[
+      fn, 
+      slugBefore + urllib.parse.quote(fn).replace(".", "%2E") + slugAfter
+    ]])
   return result
     
 
@@ -38,5 +43,5 @@ class Handler(FileSystemEventHandler):
     if event.is_directory:
       return None
     src_path = event.src_path[0:event.src_path.rfind("\\") + 1]
-    fileNames = getFileNameSlurs(listdir(src_path))
-    resetTimer(fileNames)
+    fileNamesAndUrls = getFileNameSlurs(listdir(src_path))
+    resetTimer(fileNamesAndUrls)

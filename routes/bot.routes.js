@@ -8,7 +8,7 @@ const mongoURI = process.env.ATLAS_URI;
 const client = new MongoClient(mongoURI)
 client.connect();
 
-const allowerExtensions = [
+const allowedExtensions = [
   "pdf", "txt", "doc", "xdoc", "xls", "xlsx"
 ]
 
@@ -33,31 +33,45 @@ router.post("/sync-sharepoint", async (req, res) => {
   console.log("syncing sharepoint with db...")
 
   const sharepointFiles = req.body.fileNames
+  console.log("recieved data from bot: ")
+  console.log(sharepointFiles)
+  console.log("-----------")
+  const sharepointFileNames = Array.isArray(sharepointFiles)
+    ? sharepointFiles.map(data => Array.isArray(data) && data.length === 2
+      ? data[0] : [])
+    : null
   const links = await LinkModel.find()
-  const dbFiles = links.map(({name}) => name)
+  const dbFiles = links.map(({ name }) => name)
 
   // 1. check for files to add or to delete
-  const newEntries = sharepointFiles
-    .filter(fn => !dbFiles.includes(fn))
-    .map(fn => ({ "name": fn, "link": fn, "color1": "#FFFFFF", "color2": "#000000", "author": "bot-1"}))
-  
+  const newEntries = Array.isArray(sharepointFileNames)
+    && sharepointFileNames.length > 0
+    ? sharepointFileNames
+      .filter(fn => !dbFiles.includes(fn))
+      .map((x, i) => ({
+        "name": sharepointFiles[i][0], "link": sharepointFiles[i][1],
+        "color2": "#FFFFFF",
+        "color1": "#000000" ,
+        "author": "Sharepoint bots"
+      }))
+    : []
+
   const entriesToDelete = dbFiles
-    .filter(fn => allowerExtensions.includes(fn.slice(-3).toLowerCase()))
-    .filter(fn => !sharepointFiles.includes(fn))
-    .reduce((p, n) => ({ name: [...p.name, n]}), { name: []})
+    .filter(fn => allowedExtensions.includes(fn.slice(-3).toLowerCase()))
+    .filter(fn => !sharepointFileNames.includes(fn))
+    .reduce((p, n) => ({ name: [...p.name, n] }), { name: [] })
 
   // 2. add and/or delete files
-  if(newEntries.length > 0) {
+  // 2. add and/or delete files
+  if (newEntries.length > 0) {
     const entries = await LinkModel.insertMany(newEntries)
-    console.log(entries)
   }
-  if(entriesToDelete.name.length > 0) {
+  if (entriesToDelete.name.length > 0) {
     const deleted = await LinkModel.deleteMany(entriesToDelete)
-    console.log(deleted)
   }
 
   console.log("syncing finished!")
-  res.json({"hello": "world"})
+  res.json({ "syncPostRequest": "sent" })
 })
 
 module.exports = router

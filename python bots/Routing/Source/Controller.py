@@ -32,10 +32,11 @@ def delete_last():
   print(">>> _id: " + lastLink["link"] + ", _id: " + lastLink["_id"])
   s.delete(Routes.deleteOne + lastLink["_id"])
 
-def sync_sharepoint(sharepointFileNames):
+def sync_sharepoint(postData):
   print(">>> Syncing with sharepoint...")
   jsonData = {
-    "fileNames": sharepointFileNames
+    # example: [[fileName, slurredUrl], ["test", "https://www.qrk..."] ]
+    "fileNames": postData
   }
   s.post(Routes.syncSharepoint, json=jsonData, headers=Credentials.headers)
   print(">>> Sync finished!")
