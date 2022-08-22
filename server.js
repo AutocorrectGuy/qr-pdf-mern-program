@@ -13,7 +13,7 @@ const botRouter = require("./routes/bot.routes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+console.log(process.env.PORT)
 const whitelist = ['http://localhost:3000', `http://localhost:${PORT}`,  'https://qrkodi.herokuapp.com']
 const corsConfig = {
   origin: function (origin, callback) {
@@ -51,6 +51,3 @@ app.use("/api/bot", botRouter);
 // }
 
 mongoose.connect(process.env.ATLAS_URI)
-  .then(() => {
-    app.listen(PORT, () => {console.log(`Server is up on port ${PORT}!`)});
-  });

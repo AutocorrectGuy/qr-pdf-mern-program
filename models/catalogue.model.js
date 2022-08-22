@@ -8,8 +8,7 @@ const catalogueSchema = new Schema({
     required: true,
     unique: true,
     trim: true,
-    minlength: 3,
-    maxlength: 30
+    minlength: 3
   },
   link: {
     type: String,
@@ -31,8 +30,7 @@ const catalogueSchema = new Schema({
   author: {
     type: String,
     required: true,
-    minlength: 5,
-    maxlength: 30
+    minlength: 5
   }
 }, {
   timestamps: true
