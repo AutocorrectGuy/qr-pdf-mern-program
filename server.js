@@ -51,3 +51,6 @@ app.use("/api/bot", botRouter);
 // }
 
 mongoose.connect(process.env.ATLAS_URI)
+  .then(() => {
+    app.listen(PORT, () => {console.log(`Server is up on port ${PORT}!`)});
+  });
