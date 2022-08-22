@@ -33,9 +33,7 @@ router.post("/sync-sharepoint", async (req, res) => {
   console.log("syncing sharepoint with db...")
 
   const sharepointFiles = req.body.fileNames
-  console.log("recieved data from bot: ")
-  console.log(sharepointFiles)
-  console.log("-----------")
+
   const sharepointFileNames = Array.isArray(sharepointFiles)
     ? sharepointFiles.map(data => Array.isArray(data) && data.length === 2
       ? data[0] : [])
@@ -46,16 +44,18 @@ router.post("/sync-sharepoint", async (req, res) => {
   // 1. check for files to add or to delete
   const newEntries = Array.isArray(sharepointFileNames)
     && sharepointFileNames.length > 0
-    ? sharepointFileNames
-      .filter(fn => !dbFiles.includes(fn))
-      .map((x, i) => ({
-        "name": sharepointFiles[i][0], "link": sharepointFiles[i][1],
+    ? sharepointFiles
+      .filter(file => !dbFiles.includes(file[0]))
+      .map((file) => ({
+        "name": file[0],
+        "link": file[1],
         "color2": "#FFFFFF",
-        "color1": "#000000" ,
+        "color1": "#000000",
         "author": "Sharepoint bots"
       }))
     : []
 
+  console.log(newEntries)
   const entriesToDelete = dbFiles
     .filter(fn => allowedExtensions.includes(fn.slice(-3).toLowerCase()))
     .filter(fn => !sharepointFileNames.includes(fn))

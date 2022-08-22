@@ -39,6 +39,6 @@ POST http://localhost:3001/api/bot/sync-sharepoint
 content-type: application/json
 
 {
-  "fileNames": [["Jenz 581 2022 EN.pdf", "https://chipperparts.sharepoint.com/sites/QRcatalogue/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FQRcatalogue%2FShared%20Documents%2FJenz%20581%202022%20EN%2Epdf&parent=%2Fsites%2FQRcatalogue%2FShared%20Documents%2F"], ["test.txt", "https://chipperparts.sharepoint.com/sites/QRcatalogue/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FQRcatalogue%2FShared%20Documents%2Ftest%2Etxt&parent=%2Fsites%2FQRcatalogue%2FShared%20Documents%2F"]]
+  "fileNames": [["Jenz 581 2022 EN.pdf", "https://chipperparts.sharepoint.com/sites/QRcatalogue/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FQRcatalogue%2FShared%20Documents%2FJenz%20581%202022%20EN%2Epdf&parent=%2Fsites%2FQRcatalogue%2FShared%20Documents%2F"], ["testttt.txt", "https://chipperparts.sharepoint.com/sites/QRcatalogue/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FQRcatalogue%2FShared%20Documents%2Ftestttt%2Etxt&parent=%2Fsites%2FQRcatalogue%2FShared%20Documents%2F"]]
 }
 ###
