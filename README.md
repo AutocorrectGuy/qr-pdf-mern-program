@@ -9,8 +9,10 @@
   - Atvērt "Windows Command Prompt". To var izdarīt uz tastatūras turot "windows" taustiņu un reizē nospiežot "r". Vai ierakstot windows meklētājā "run" (latviski: "palaist").
   - lodziņā "run" ievadīt trīs burtus "cmd". Nospiest enter un atvērsies "Windows Command Prompt"
   - Kad cmd.exe ("Windows Command Prompt") ir atvēries, instalēt pyton pakotnes ievadod šādas komandas:
-  - *pip install watchdog*
-  - *pip install requests*
+```
+pip install watchdog
+pip install requests
+```
   
 ## 2. Lejuplādēt un uzstādīt izstrādāto programmu: 
   Links: https://github.com/AutocorrectGuy/qr-pdf-mern-program/blob/main/python%20bots/py-1.rar
