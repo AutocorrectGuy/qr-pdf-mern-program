@@ -49,8 +49,8 @@ router.post("/sync-sharepoint", async (req, res) => {
       .map((file) => ({
         "name": file[0],
         "link": file[1],
-        "color2": "#FFFFFF",
-        "color1": "#000000",
+        "color1": "#FFFFFF",
+        "color2": "#000000",
         "author": "Sharepoint bots"
       }))
     : []
