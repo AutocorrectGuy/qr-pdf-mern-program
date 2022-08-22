@@ -7,11 +7,11 @@
   Pirmajā instalēšanas solī atzīmēt ķeksīti lodziņā *Add Python to PATH*
   
 ## 2. Lejuplādēt un uzstādīt izstrādāto programmu: 
-  Links: https://github.com/AutocorrectGuy/qr-pdf-mern-program/blob/main/python%20bots/py-1.rar
-##### 2.1. Izvērst *.rar* failu.
-##### 2.1. Gadījumā, ja nav iespējams izvērst (extract) failu *py-1.rar*, lejuplādēt un instalēt aplikāciju, kura spēs to izdarīt.
-  Links: https://www.win-rar.com/predownload.html?&L=0
-##### 2.2. Instalēt python pakotnes.
+  Links: https://github.com/AutocorrectGuy/qr-pdf-mern-program/blob/main/python%20bots.rar
+##### 2.1. Izvērst *.rar* failu
+##### 2.1. Gadījumā, ja nav iespējams izvērst (extract) failu *python bots.rar*, lejuplādēt un instalēt aplikāciju, kura spēs to izdarīt.
+  Links uz šo aplikāciju: https://www.win-rar.com/predownload.html?&L=0
+##### 2.2. Instalēt python pakotnes
   Palaist failu *install-pyton-libraries.bat* Kad fails tiks palaists, uz īsu brīdi atvērsies "windows command propmt" lodziņš. Pakas lejuplādēsies, instalēsies, un tad šis lodziņš aizvērsies
 ##### 2.3. Izvēlēties mapītes direktoriju, kuras faili tiks sinhronizēti
   Piemērs: "C:\Users\autoc\Desktop\sharepoint-faili".
@@ -24,4 +24,3 @@ C:\Users\autoc\Desktop\test 2
  
  
  Kad bots ir palaists, izvēlētajā mapītē (kura tika izvēlēta 2.3. solī) jebkurš ievietotais faila nosaukums tiks augšuplādēts datubāzē, kurš reizē parādīsies https://www.qrkodi.herokuapp.com/ . Faila nosaukumam automātiski tiek pievienots sharepoint adreses teksts, kas rezultātā rada īsto Microsoft Sharepoint url adresi uz konkrēto failu.
-
