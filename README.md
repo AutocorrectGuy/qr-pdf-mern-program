@@ -12,8 +12,9 @@
   Gadījumā, ja nav iespējams izvērst (extract) failu *python bots.rar*, lejuplādēt un instalēt aplikāciju, kura spēs to izdarīt.
   Links uz šo aplikāciju: https://www.win-rar.com/predownload.html?&L=0
 ##### 2.2. Instalēt python pakotnes
-  Atvērt failu *install-pyton-libraries.bat* Kad fails tiks palaists, uz īsu brīdi atvērsies "windows command propmt" lodziņš. Pakas lejuplādēsies, instalēsies, un tad šis lodziņš aizvērsies
+  Atvērt failu *install-pyton-libraries.bat*. Kad fails tiks palaists, uz īsu brīdi atvērsies *windows command propmt* lodziņš. Pakas lejuplādēsies, instalēsies, un tad šis lodziņš aizvērsies
 ##### 2.3. Izvēlēties mapītes direktoriju, kuras faili tiks sinhronizēti
+  *Šajā solī ir jāsameklē mape, kurā glabājas un glabāsies visi katalogi, kurus gribēs publicēt onlainā.*
   Atvērt failu *enter_path_here.txt*. Failā būs ievadīts paraugs ar direktoriju, kurš tika izmantots, lai testētu programmu. Jūsu uzdevums: ievadīt savu mērķ-direktoriju, kurā glabāsies faili. Rezultātam jāizskatās apmēram šādi:
 `````
 C:\Users\autoc\Desktop\sharepoint-faili
