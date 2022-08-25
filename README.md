@@ -1,4 +1,4 @@
-# Pamācība
+# Pamācība (shrepoint bota iestatīšana)
 ## 1. Python uzstādīšana
 ##### 1.1. Lejuplādēt python
   Links: https://www.python.org/downloads/
