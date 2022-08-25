@@ -2,7 +2,7 @@ const User = require("../models/User");
 const SHAREPOINT_BOT = require("./bot.controller")
 const { getUserData, checkTokenLight } = require("../middleware/auth.middleware");
 const { handleErrors } = require("./AuthUtils/handleAuthErrors")
-const JWT = require ("./AuthUtils/JWT")
+const JWT = require("./AuthUtils/JWT")
 
 require("dotenv").config();
 
@@ -15,9 +15,9 @@ module.exports.register_POST = async (req, res, next) => {
   let userStatus = "client";
   try {
     // check employee pass-code
-    if(secretChecked === true && process.env.REGISTRATION_CODE !== secret) 
-      throw ({message: "Employee validation failed"})
-    else if(secretChecked === true && process.env.REGISTRATION_CODE === secret) 
+    if (secretChecked === true && process.env.REGISTRATION_CODE !== secret)
+      throw ({ message: "Employee validation failed" })
+    else if (secretChecked === true && process.env.REGISTRATION_CODE === secret)
       userStatus = "employee"
 
     // register user in database
@@ -42,12 +42,18 @@ module.exports.register_POST = async (req, res, next) => {
 };
 
 module.exports.login_POST = async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.login(username, password);
-  
-  SHAREPOINT_BOT._is_logged_in(username, password)
-    ? SHAREPOINT_BOT._LOGIN_BOT(user, res)
-    : loginUser(user, res)
+  const { username, password } = req.body
+  try {
+    const user = await User.login(username, password);
+    SHAREPOINT_BOT._is_logged_in(username, password)
+      ? SHAREPOINT_BOT._LOGIN_BOT(user, res)
+      : loginUser(user, res)
+  }
+  catch (err) {
+    console.log(err)
+    res.status(401).json({})
+  }
+
 };
 
 module.exports.logout_GET = (req, res) => {
@@ -73,7 +79,7 @@ function loginUser(user, res) {
   try {
     const token = JWT.createToken(user._id);
     res.cookie("hello", {}, { httpOnly: false, maxAge: JWT.maxAge * 1000 })
-    res.cookie("jwt", token, { httpOnly: true,  maxAge: JWT.maxAge * 1000 })
+    res.cookie("jwt", token, { httpOnly: true, maxAge: JWT.maxAge * 1000 })
 
     res.status(200).json({
       user: user._id,

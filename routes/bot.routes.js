@@ -55,22 +55,17 @@ router.post("/sync-sharepoint", async (req, res) => {
       }))
     : []
 
-  console.log(newEntries)
   const entriesToDelete = dbFiles
     .filter(fn => allowedExtensions.includes(fn.slice(-3).toLowerCase()))
     .filter(fn => !sharepointFileNames.includes(fn))
     .reduce((p, n) => ({ name: [...p.name, n] }), { name: [] })
 
   // 2. add and/or delete files
-  // 2. add and/or delete files
-  if (newEntries.length > 0) {
-    const entries = await LinkModel.insertMany(newEntries)
-  }
-  if (entriesToDelete.name.length > 0) {
-    const deleted = await LinkModel.deleteMany(entriesToDelete)
-  }
+  if (newEntries.length > 0) 
+    await LinkModel.insertMany(newEntries)
+  if (entriesToDelete.name.length > 0) 
+    await LinkModel.deleteMany(entriesToDelete)
 
-  console.log("syncing finished!")
   res.json({ "syncPostRequest": "sent" })
 })
 
